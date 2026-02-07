@@ -1,35 +1,104 @@
-<div class="news-grid">
-    <div class="square-flip">
-        <div class="square">
-            <div class="square-container">
-                <div class="news-image">
-                    <img src="src/images/card1.png" alt="Нейро-интерфейс">
-                </div>
-                <div class="news-content">
-                    <h2 class="floating-text">NEURODRIVE</h2>
-                    <h3 class="floating-text">НОВЫЙ ЧИП ДЛЯ ПРЯМОГО ПОДКЛЮЧЕНИЯ К СЕТИ</h3>
-                    <div class="bottom-row">
-                        <div class="reactions">
-                            <span class="reaction">👍 142</span>
-                            <span class="reaction">👎 8</span>
-                            <span class="reaction">🎵 23</span>
-                            <span class="reaction">💾 45</span>
-                        </div>
-                        <button class="read-more-btn">READ MORE →</button>
-                    </div>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/augmented-ui@2/augmented-ui.min.css">
+    
+    <!-- Cyberpunk CSS Framework -->
+    <link rel="stylesheet" href="styles/cyberpunk/cyberpunk.css">
+    <link rel="stylesheet" href="styles/cyberpunk/cyber-grid.css">
+    <link rel="stylesheet" href="styles/cyberpunk/cyberpunk-integrated.css">
+    <!-- Cyberpunk JavaScript Helper -->
+    <script src="styles/cyberpunk/helper.js"></script>
+    <link rel="stylesheet" href="styles/header.css">
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/map.css">
+</head>
+<body>
+    <!-- Sticky Navigation -->
+    <nav class="cyber-razor-bottom-fixed">
+        <div class="logo">
+            <div class="cyberpunk-font-og fg-white">CYBERPUNK</div>
+        </div>
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <ul>
+            <li><a href="index.html">HOME</a></li>
+            <li><a href="map.html">MAP</a></li>
+            <li><a href="news.html">HEADLINES</a></li>
+            <li><a href="contacts.html">CONTACT</a></li>
+        </ul>
+    </nav>
+    
+    <!-- Mobile Menu Overlay -->
+    <div class="menu-overlay"></div>
+
+    <!-- Map Background Container -->
+    <div class="map-bg-container">
+        <div class="map-bg-image"></div>
+        <div class="map-mist-overlay"></div>
+        <div class="map-side-mist-left"></div>
+        <div class="map-side-mist-right"></div>
+    </div>
+
+    <!-- Main Map Container -->
+    <div class="map-container">
+        <!-- Map Header -->
+        <div class="map-header">
+            <h1 class="map-title">Cyberpunk City Map</h1>
+        </div>
+
+        <!-- Map Content Area -->
+        <div class="map-content">
+            <!-- Interactive Map -->
+            <div class="interactive-map" id="interactiveMap">
+                <!-- Building Markers Container -->
+                <div class="building-markers" id="buildingMarkers">
+                    <!-- Building markers will be dynamically added here -->
                 </div>
             </div>
-        </div>
-        <div class="square2">
-            <div class="square-container2">
-                <div class="align-center">
-                    <h2>NEURODRIVE</h2>
-                    <p>Корпорация NeonTech анонсировала революционный нейро-чип для прямого подключения к мозгу. Новое устройство позволяет пользователям взаимодействовать с цифровым миром без физических интерфейсов. Первые испытания показали 98% успешность имплантации.</p>
+
+            <!-- Map Legend -->
+            <div class="map-legend">
+                <div class="legend-title">Building Types</div>
+                <div class="legend-item">
+                    <div class="legend-marker residential"></div>
+                    <span>Residential</span>
                 </div>
-                <button class="flip-back-btn">← BACK</button>
+                <div class="legend-item">
+                    <div class="legend-marker commercial"></div>
+                    <span>Commercial</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-marker industrial"></div>
+                    <span>Industrial</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-marker government"></div>
+                    <span>Government</span>
+                </div>
+            </div>
+
+            <!-- Map Controls -->
+            <div class="map-controls">
+                <div class="zoom-controls">
+                    <button class="map-control-btn zoom-in" id="zoomIn" title="Zoom In">+</button>
+                    <button class="map-control-btn zoom-out" id="zoomOut" title="Zoom Out">−</button>
+                </div>
+                <button class="map-control-btn" id="resetView" title="Reset View">⌂</button>
+                <button class="map-control-btn" id="fullscreen" title="Fullscreen">⛶</button>
             </div>
         </div>
     </div>
-    
-    <!-- Add more cards as needed -->
-</div>
+
+    <!-- Scripts -->
+    <script src="scrips/mobile-menu.js"></script>
+    <script src="scrips/map.js"></script>
+</body>
+</html>
