@@ -56,32 +56,12 @@
 
         <!-- Map Content Area -->
         <div class="map-content">
-            <!-- Interactive Map -->
+            <!-- Interactive Map = glass control panel (fixed). Map content moves inside it. -->
             <div class="interactive-map" id="interactiveMap">
-                <!-- Building Markers Container -->
-                <div class="building-markers" id="buildingMarkers">
-                    <!-- Building markers will be dynamically added here -->
-                </div>
-            </div>
-
-            <!-- Map Legend -->
-            <div class="map-legend">
-                <div class="legend-title">Building Types</div>
-                <div class="legend-item">
-                    <div class="legend-marker residential"></div>
-                    <span>Residential</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-marker commercial"></div>
-                    <span>Commercial</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-marker industrial"></div>
-                    <span>Industrial</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-marker government"></div>
-                    <span>Government</span>
+                <div class="map-inner" id="mapInner">
+                    <div class="building-markers" id="buildingMarkers">
+                        <!-- Building markers will be dynamically added here -->
+                    </div>
                 </div>
             </div>
 

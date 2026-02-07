@@ -1,24 +1,77 @@
-// Map JavaScript - Comprehensive map functionality
+// =============================================================================
+// MAP BUILDINGS DATA – fixed pixel coordinates on the map images
+// Schema per building: { id, name_capital, description, mobile: { x, y }, desktop: { x, y } }
+// Coordinates are in pixels on mobile-maps.jpg (mobile) and desktop-maps.jpg (desktop).
+// =============================================================================
+
+const MAP_IMAGES = {
+    mobile: { width: 1080, height: 1920 },   // mobile-maps.jpg dimensions (px)
+    desktop: { width: 1920, height: 1080 }   // desktop-maps.jpg dimensions (px)
+};
+
+const MAP_BUILDINGS = [
+    { id: 'b1', name_capital: 'BC TEIS', description: 'Главное здание Оракула', mobile: { x: 378, y: 1344 }, desktop: { x: 948, y: 353 } },
+    { id: 'b2', name_capital: 'NeoTech HQ', description: 'Corporate headquarters of NeonTech Corporation', mobile: { x: 270, y: 480 }, desktop: { x: 726, y: 612 } },
+    { id: 'b3', name_capital: 'Neon Light Bar', description: 'Один из множества баров. Известен благодаря своки концертам', mobile: { x: 486, y: 1056 }, desktop: { x: 1174, y: 670 } },
+    { id: 'b4', name_capital: 'Street Vendors', description: 'Street-level commercial district', mobile: { x: 270, y: 1536 }, desktop: { x: 480, y: 864 } }
+];
+
+// =============================================================================
+// Map JavaScript - Points fixed to map image pixel coordinates
+// =============================================================================
+
+const MOBILE_BREAKPOINT = 768;
+const PARALLAX_FACTOR = 0.2;  // full-page background moves slower, same direction
+
 class CyberpunkMap {
     constructor() {
         this.map = document.getElementById('interactiveMap');
+        this.mapInner = document.getElementById('mapInner');
         this.markersContainer = document.getElementById('buildingMarkers');
+        this.bgImage = document.querySelector('.map-bg-image');
         this.zoomLevel = 1;
         this.isDragging = false;
         this.dragStart = { x: 0, y: 0 };
         this.currentTranslate = { x: 0, y: 0 };
         this.maxZoom = 3;
-        this.minZoom = 0.5;
-        
+        this.minZoom = 1;  // can't zoom out past map filling the frame
+        this.isMobile = window.innerWidth <= MOBILE_BREAKPOINT;
+        window.cyberpunkMap = this;
         this.init();
     }
 
     init() {
+        this.setMapAspectRatio();
         this.setupEventListeners();
         this.createBuildingMarkers();
         this.setupZoomControls();
         this.setupFullscreen();
         this.setupResetView();
+        window.addEventListener('resize', this.handleResize.bind(this));
+    }
+
+    isMobileView() {
+        return window.innerWidth <= MOBILE_BREAKPOINT;
+    }
+
+    getCurrentImageConfig() {
+        return this.isMobileView() ? MAP_IMAGES.mobile : MAP_IMAGES.desktop;
+    }
+
+    setMapAspectRatio() {
+        const cfg = this.getCurrentImageConfig();
+        this.map.style.aspectRatio = `${cfg.width} / ${cfg.height}`;
+    }
+
+    handleResize() {
+        const wasMobile = this.isMobile;
+        this.isMobile = this.isMobileView();
+        this.setMapAspectRatio();
+        if (wasMobile !== this.isMobile) {
+            this.updateMarkerPositions();
+        } else {
+            this.updateMarkerPositions();
+        }
     }
 
     setupEventListeners() {
@@ -115,9 +168,32 @@ class CyberpunkMap {
         this.updateMarkerSizes();
     }
 
+    getTranslateBounds() {
+        const w = this.map.offsetWidth;
+        const h = this.map.offsetHeight;
+        const s = this.zoomLevel;
+        return {
+            xMin: w * (1 - s),
+            xMax: 0,
+            yMin: h * (1 - s),
+            yMax: 0
+        };
+    }
+
     updateMapTransform() {
-        const transform = `translate(${this.currentTranslate.x}px, ${this.currentTranslate.y}px) scale(${this.zoomLevel})`;
-        this.markersContainer.style.transform = transform;
+        const b = this.getTranslateBounds();
+        this.currentTranslate.x = Math.max(b.xMin, Math.min(b.xMax, this.currentTranslate.x));
+        this.currentTranslate.y = Math.max(b.yMin, Math.min(b.yMax, this.currentTranslate.y));
+        const tx = this.currentTranslate.x;
+        const ty = this.currentTranslate.y;
+        const transform = `translate(${tx}px, ${ty}px) scale(${this.zoomLevel})`;
+        this.mapInner.style.transform = transform;
+        this.markersContainer.style.transform = 'none';
+        if (this.bgImage) {
+            const px = tx * PARALLAX_FACTOR;
+            const py = ty * PARALLAX_FACTOR;
+            this.bgImage.style.transform = `translate(${px}px, ${py}px)`;
+        }
     }
 
     updateMarkerSizes() {
@@ -167,60 +243,23 @@ class CyberpunkMap {
     }
 
     createBuildingMarkers() {
-        // Sample building data - you can replace this with your actual data
-        const buildings = [
-            {
-                id: 'neontech-hq',
-                name: 'NeonTech HQ',
-                type: 'government',
-                x: 20,
-                y: 30,
-                description: 'Corporate headquarters of NeonTech Corporation'
-            },
-            {
-                id: 'cyber-market',
-                name: 'Cyber Market',
-                type: 'commercial',
-                x: 60,
-                y: 45,
-                description: 'Underground marketplace for cybernetic enhancements'
-            },
-            {
-                id: 'neon-dorms',
-                name: 'Neon Dorms',
-                type: 'residential',
-                x: 35,
-                y: 70,
-                description: 'High-rise residential complex for corporate employees'
-            },
-            {
-                id: 'data-factory',
-                name: 'Data Factory',
-                type: 'industrial',
-                x: 80,
-                y: 25,
-                description: 'Industrial data processing facility'
-            },
-            {
-                id: 'neural-clinic',
-                name: 'Neural Clinic',
-                type: 'government',
-                x: 45,
-                y: 55,
-                description: 'Medical facility specializing in neural implants'
-            },
-            {
-                id: 'street-vendors',
-                name: 'Street Vendors',
-                type: 'commercial',
-                x: 25,
-                y: 80,
-                description: 'Street-level commercial district'
-            }
-        ];
-
-        buildings.forEach(building => {
+        MAP_BUILDINGS.forEach(building => {
             this.createMarker(building);
+        });
+        this.updateMarkerPositions();
+    }
+
+    updateMarkerPositions() {
+        const cfg = this.getCurrentImageConfig();
+        const isMobile = this.isMobileView();
+        this.markersContainer.querySelectorAll('.location-marker').forEach((el, i) => {
+            const building = MAP_BUILDINGS[i];
+            if (!building) return;
+            const coords = isMobile ? building.mobile : building.desktop;
+            const leftPct = (coords.x / cfg.width) * 100;
+            const topPct = (coords.y / cfg.height) * 100;
+            el.style.left = `${leftPct}%`;
+            el.style.top = `${topPct}%`;
         });
     }
 
@@ -228,9 +267,6 @@ class CyberpunkMap {
         const marker = document.createElement('div');
         marker.className = 'location-marker';
         marker.id = building.id;
-        marker.style.left = `${building.x}%`;
-        marker.style.top = `${building.y}%`;
-        marker.dataset.type = building.type;
         marker.dataset.description = building.description;
 
         // Create marker icon
@@ -238,118 +274,60 @@ class CyberpunkMap {
         icon.className = 'marker-icon';
         marker.appendChild(icon);
 
-        // Create neon sign
+        // Create neon sign (name_capital)
         const neonSign = document.createElement('div');
         neonSign.className = 'neon-sign';
-        neonSign.textContent = building.name;
+        neonSign.textContent = building.name_capital;
         marker.appendChild(neonSign);
 
-        // Add click event
-        marker.addEventListener('click', () => {
-            this.showBuildingInfo(building);
-        });
-
-        // Add hover effects
-        marker.addEventListener('mouseenter', () => {
-            neonSign.style.opacity = '1';
-            neonSign.style.transform = 'translateX(-50%) translateY(-5px)';
-        });
-
-        marker.addEventListener('mouseleave', () => {
-            neonSign.style.opacity = '0';
-            neonSign.style.transform = 'translateX(-50%)';
+        // Add click event – toggle pin popup (name + description) above marker
+        marker.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.toggleMarkerPopup(marker, building);
         });
 
         this.markersContainer.appendChild(marker);
     }
 
-    showBuildingInfo(building) {
-        // Create modal for building information
-        const modal = document.createElement('div');
-        modal.className = 'building-modal';
-        modal.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-        `;
+    closeAnyMarkerPopup() {
+        document.querySelectorAll('.marker-popup').forEach(el => el.remove());
+    }
 
-        const modalContent = document.createElement('div');
-        modalContent.style.cssText = `
-            background: rgba(0, 0, 0, 0.9);
-            border: 2px solid rgba(0, 200, 255, 0.6);
-            border-radius: 8px;
-            padding: 30px;
-            max-width: 500px;
-            color: white;
-            font-family: 'PixelArt', monospace;
-            text-align: center;
-            position: relative;
-        `;
-
+    toggleMarkerPopup(markerEl, building) {
+        const existing = markerEl.querySelector('.marker-popup');
+        if (existing) {
+            existing.remove();
+            return;
+        }
+        this.closeAnyMarkerPopup();
+        const popup = document.createElement('div');
+        popup.className = 'marker-popup';
         const closeBtn = document.createElement('button');
+        closeBtn.className = 'marker-popup-close';
+        closeBtn.setAttribute('aria-label', 'Close');
         closeBtn.textContent = '×';
-        closeBtn.style.cssText = `
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            background: none;
-            border: none;
-            color: rgba(0, 200, 255, 0.8);
-            font-size: 24px;
-            cursor: pointer;
-            padding: 5px;
-        `;
-
-        const title = document.createElement('h2');
-        title.textContent = building.name;
-        title.style.cssText = `
-            color: rgba(0, 200, 255, 0.9);
-            margin-bottom: 20px;
-            font-size: 1.8rem;
-            text-transform: uppercase;
-        `;
-
-        const description = document.createElement('p');
-        description.textContent = building.description;
-        description.style.cssText = `
-            line-height: 1.6;
-            margin-bottom: 20px;
-            font-size: 1rem;
-        `;
-
-        const type = document.createElement('div');
-        type.textContent = `Type: ${building.type.charAt(0).toUpperCase() + building.type.slice(1)}`;
-        type.style.cssText = `
-            color: rgba(0, 200, 255, 0.7);
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        `;
-
-        closeBtn.addEventListener('click', () => {
-            document.body.removeChild(modal);
-        });
-
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                document.body.removeChild(modal);
+        const title = document.createElement('div');
+        title.className = 'marker-popup-title';
+        title.textContent = building.name_capital;
+        const desc = document.createElement('p');
+        desc.className = 'marker-popup-desc';
+        desc.textContent = building.description;
+        const closeOnMapClick = (e) => {
+            if (!markerEl.contains(e.target)) {
+                popup.remove();
+                document.removeEventListener('click', closeOnMapClick);
             }
+        };
+        closeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            popup.remove();
+            document.removeEventListener('click', closeOnMapClick);
         });
-
-        modalContent.appendChild(closeBtn);
-        modalContent.appendChild(title);
-        modalContent.appendChild(description);
-        modalContent.appendChild(type);
-        modal.appendChild(modalContent);
-        document.body.appendChild(modal);
+        popup.appendChild(closeBtn);
+        popup.appendChild(title);
+        popup.appendChild(desc);
+        markerEl.appendChild(popup);
+        setTimeout(() => document.addEventListener('click', closeOnMapClick), 0);
     }
 }
 
