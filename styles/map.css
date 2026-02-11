@@ -1,4 +1,16 @@
 /* Map Page Styles - Following the same design patterns as news.css */
+/*
+  SIZE CHAIN (how .interactive-map gets its size):
+  - .map-container: height = 100vh − reserve, so header + map fit on screen (reserve for browser chrome).
+  - .map-header: height = var(--map-header-height), so it’s in relation to the same system.
+  - .map-content: flex: 1 + min-height: 0 → fills (container − header). Padding shrinks content box.
+  - .interactive-map: 100% of .map-content’s content box, aspect-ratio 1920/1080 (or 1080/1920 mobile).
+*/
+:root {
+    --map-viewport-reserve: 8vh;   /* so header + map fit without scroll (mobile chrome, etc.) */
+    --map-header-height: 80px;    /* desktop; overridden in mobile/tablet */
+}
+
 body {
     background: none;
     min-height: 100vh;
@@ -85,24 +97,27 @@ body {
     transform: translateZ(0); /* Hardware acceleration */
 }
 
-/* Map Container */
+/* Map Container – height = viewport minus reserve so header + map fit on screen */
 .map-container {
     position: relative;
     width: 100%;
-    height: 100vh;
+    height: calc(100vh - var(--map-viewport-reserve));
     display: flex;
     flex-direction: column;
     z-index: 10;
 }
 
-/* Map Header - Similar to news banner */
+/* Map Header – height in relation to .map-container via variable */
 .map-header {
     position: relative;
     width: 100%;
-    height: 80px;
+    height: var(--map-header-height);
+    flex: 0 0 auto;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding-top: 14px;
+    box-sizing: border-box;
     background: rgba(0, 0, 0, 0.8);
     border-bottom: 2px solid rgba(0, 200, 255, 0.6);
     backdrop-filter: blur(10px);
@@ -412,8 +427,8 @@ body {
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
-    .map-header {
-        height: 60px;
+    :root {
+        --map-header-height: 60px;
     }
     
     .map-title {
@@ -502,8 +517,8 @@ body {
 
 /* Tablet Responsiveness */
 @media (min-width: 769px) and (max-width: 1024px) {
-    .map-header {
-        height: 70px;
+    :root {
+        --map-header-height: 70px;
     }
     
     .map-title {
