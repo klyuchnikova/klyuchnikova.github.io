@@ -25,12 +25,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.querySelectorAll('.reaction').forEach(reaction => {
         reaction.addEventListener('click', function() {
-            if(!this.dataset.clicked) {
-                const count = parseInt(this.textContent.match(/\d+/)[0]);
-                this.textContent = this.textContent.replace(/\d+/, count + 1);
-                this.dataset.clicked = true;
-                this.style.color = '#ff6b00';
-                this.style.textShadow = '0 0 10px rgba(255, 107, 0, 0.8)';
+            const countEl = this.querySelector('.reaction-count');
+            if (!countEl) return;
+            if (!this.classList.contains('active')) {
+                const count = parseInt(countEl.textContent, 10) || 0;
+                countEl.textContent = count + 1;
+                this.classList.add('active');
             }
         });
     });

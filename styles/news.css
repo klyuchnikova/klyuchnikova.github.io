@@ -350,15 +350,31 @@ body {
     text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
 }
 
-/* Cyberpunk pulse animation for active reactions */
+/* Pressed state – stays visible, color change, no disappear */
 .reaction.active {
-    animation: pulse 1.5s infinite;
+    cursor: default;
 }
 
-@keyframes pulse {
-    0% { filter: drop-shadow(0 0 2px var(--cyan)); }
-    50% { filter: drop-shadow(0 0 8px var(--yellow)); }
-    100% { filter: drop-shadow(0 0 2px var(--cyan)); }
+.reaction.active .reaction-count {
+    color: inherit;
+}
+
+.reaction-like.active {
+    color: #ff6b00;
+    text-shadow: 0 0 10px rgba(255, 107, 0, 0.8);
+}
+
+.reaction-like.active .reaction-icon {
+    filter: drop-shadow(0 0 6px rgba(255, 107, 0, 0.9)) brightness(1.1);
+}
+
+.reaction-heart.active {
+    color: #ff3366;
+    text-shadow: 0 0 10px rgba(255, 51, 102, 0.8);
+}
+
+.reaction-heart.active .reaction-icon {
+    filter: drop-shadow(0 0 6px rgba(255, 51, 102, 0.9)) brightness(1.1);
 }
 
 /* Button Styles - Transparent Cyberpunk Version */
