@@ -1,0 +1,230 @@
+/**
+ * Warning banner – barricade-tape style strip.
+ * Opaque black background; bluish diagonal stripes on top AND bottom; static text fixed to the line.
+ * Optional: .warning-banner--stripes-move (stripes move slowly, top→right, bottom→left).
+ * Optional: .warning-banner--roll-in (trigger roll-in from left; add class on your event).
+ */
+
+.warning-banner {
+    --warning-banner-height: 24px;
+    --warning-banner-stripe-color: #00ccff;
+    --warning-banner-stripe-dim: rgba(0, 180, 255, 0.5);
+    --warning-banner-text-color: rgba(0, 220, 255, 0.95);
+    --warning-banner-edge-height: 4px;
+    position: fixed;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: var(--warning-banner-height);
+    transform: var(--warning-banner-transform, none);
+    transform-origin: center center;
+    background-color: #0a0a0f;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 49;
+    pointer-events: none;
+    box-sizing: border-box;
+}
+
+/* Top edge: diagonal stripes at 45°, bright strips longer */
+.warning-banner__edge {
+    flex-shrink: 0;
+    height: var(--warning-banner-edge-height);
+    width: 100%;
+    background: repeating-linear-gradient(
+        45deg,
+        var(--warning-banner-stripe-color) 0,
+        var(--warning-banner-stripe-color) 16px,
+        var(--warning-banner-stripe-dim) 16px,
+        var(--warning-banner-stripe-dim) 24px
+    );
+    background-size: 40px 40px;
+    /* Glow behind the strip (below for top edge), no inward shine */
+    box-shadow:
+        0 4px 10px rgba(0, 200, 255, 0.5),
+        0 0 14px rgba(0, 200, 255, 0.35);
+    z-index: 2;
+    position: relative;
+}
+
+/* Bottom edge: same stripes, glow behind (above) */
+.warning-banner__edge--bottom {
+    flex-shrink: 0;
+    box-shadow:
+        0 -4px 10px rgba(0, 200, 255, 0.5),
+        0 0 14px rgba(0, 200, 255, 0.35);
+}
+
+/* ----------  Animation 1: Stripes moving slowly (top→right, bottom→left)  ---------- */
+.warning-banner--stripes-move .warning-banner__edge:not(.warning-banner__edge--bottom) {
+    animation: warning-banner-stripes-right 14s linear infinite;
+}
+
+.warning-banner--stripes-move .warning-banner__edge--bottom {
+    animation: warning-banner-stripes-left 14s linear infinite;
+}
+
+@keyframes warning-banner-stripes-right {
+    0% { background-position: 0 0; }
+    100% { background-position: 40px 0; }
+}
+
+@keyframes warning-banner-stripes-left {
+    0% { background-position: 0 0; }
+    100% { background-position: -40px 0; }
+}
+
+/* ----------  Animation 2: Roll-in from left, wavy settle  ---------- */
+.warning-banner--roll-in {
+    transform-origin: left center;
+    animation: warning-banner-roll-in 1.1s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+@keyframes warning-banner-roll-in {
+    0% {
+        transform: translateX(-100%);
+    }
+    52% {
+        transform: translateX(0);
+    }
+    68% {
+        transform: translateX(4%);
+    }
+    82% {
+        transform: translateX(-1.5%);
+    }
+    92% {
+        transform: translateX(0.5%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+/* Middle: text fixed to the line (static, no scroll) */
+.warning-banner__inner {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
+    z-index: 1;
+}
+
+.warning-banner__text-track {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    gap: 2.5em;
+}
+
+.warning-banner__text {
+    font-family: "PixelArt", "Orbitron", monospace;
+    font-size: clamp(0.85rem, 2.2vw, 1.15rem);
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--warning-banner-text-color);
+    text-shadow:
+        0 0 4px var(--warning-banner-stripe-color),
+        0 0 8px rgba(0, 200, 255, 0.8),
+        0 0 16px rgba(0, 150, 255, 0.5);
+    padding: 0 0.5em;
+}
+
+/* Preset: horizontal at top of viewport (below nav) */
+.warning-banner--top {
+    top: 60px;
+    bottom: auto;
+}
+
+/* Preset: sticks to top of news block (use when banner is inside .news-feed) */
+.warning-banner--news-top {
+    position: absolute;
+    top: 0;
+    bottom: auto;
+    left: 0;
+    right: 0;
+    width: 100%;
+}
+
+/* Preset: fixed near bottom, just above glass banner */
+.warning-banner--bottom {
+    top: auto;
+    bottom: 56px;
+    left: 0;
+    right: 0;
+    width: 100%;
+}
+
+/* Start off-screen left so roll-in can be triggered (remove when adding --roll-in) */
+.warning-banner--initially-hidden {
+    transform: translateX(-100%);
+    transform-origin: left center;
+}
+
+/* Preset: diagonal (e.g. top-left to bottom-right), touches corners */
+.warning-banner--diagonal-tl {
+    top: 0;
+    bottom: auto;
+    left: 0;
+    right: auto;
+    width: 150vmax;
+    transform: rotate(-35deg) translateX(-30%);
+}
+
+.warning-banner--diagonal-tr {
+    top: 0;
+    bottom: auto;
+    left: auto;
+    right: 0;
+    width: 150vmax;
+    transform: rotate(35deg) translateX(30%);
+}
+
+/* Preset: vertical (rotated 90deg), e.g. left edge */
+.warning-banner--vertical-left {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: auto;
+    width: 48px;
+    height: 100vh;
+    transform: none;
+}
+
+.warning-banner--vertical-left .warning-banner__edge {
+    width: 100%;
+    height: var(--warning-banner-edge-height);
+}
+
+.warning-banner--vertical-left .warning-banner__inner {
+    flex-direction: column;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+}
+
+.warning-banner--vertical-left .warning-banner__text-track {
+    padding-left: 0;
+    padding-top: 0;
+}
+
+/* Optional: animate the whole banner (slide in from side, move up/down). Use on .warning-banner. */
+.warning-banner--slide-in-right {
+    animation: warning-banner-slide-in-right 0.6s ease-out forwards;
+}
+
+.warning-banner--slide-in-left {
+    animation: warning-banner-slide-in-left 0.6s ease-out forwards;
+}
+
+@keyframes warning-banner-slide-in-right {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+}
+
+@keyframes warning-banner-slide-in-left {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(0); }
+}

@@ -38,6 +38,7 @@ body {
 /* ----------  VERTICAL NEWS FEED (hero in center, snap, four states)  ---------- */
 /* Feed: full width, fixed height, scrollable. Card style unchanged; only layout here. */
 .news-feed {
+    position: relative;
     width: 100%;
     height: calc(100vh - 60px);
     min-height: 320px;
