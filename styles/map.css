@@ -30,71 +30,26 @@ body {
     overflow: hidden;
 }
 
-/* Map Background Image – full-page atmosphere; parallax follows glass map (slower) */
-.map-bg-image {
+/* Layer 1: dark fill + animated elements (CSS/JS) */
+.map-bg-base {
     position: absolute;
-    width: 100%;
-    height: 100%;
-    background-image: url('../src/images/desktop-maps.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    transform-origin: 50% 50%;
-    transition: none;
+    inset: 0;
+    background: #0a0a12;
 }
 
-/* Dark Mist Overlay - Creates depth effect */
-.map-mist-overlay {
+.map-bg-animated {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(
-        ellipse at center,
-        transparent 0%,
-        rgba(0, 0, 0, 0.1) 30%,
-        rgba(0, 0, 0, 0.3) 60%,
-        rgba(0, 0, 0, 0.6) 80%,
-        rgba(0, 0, 0, 0.8) 100%
-    );
+    inset: 0;
     pointer-events: none;
-    z-index: 1;
+    /* placeholder for animated elements */
 }
 
-/* Dark Mist on Sides - Different scroll dynamics */
-.map-side-mist-left {
+/* Layer 2: moves with scroll, slower (depth) – transform set in JS */
+.map-bg-parallax {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 15%;
-    height: 100%;
-    background: linear-gradient(
-        to right,
-        rgba(0, 0, 0, 0.9) 0%,
-        rgba(0, 0, 0, 0.7) 50%,
-        rgba(0, 0, 0, 0.3) 80%,
-        transparent 100%
-    );
-    z-index: 2;
-    transform: translateZ(0); /* Hardware acceleration */
-}
-
-.map-side-mist-right {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 15%;
-    height: 100%;
-    background: linear-gradient(
-        to left,
-        rgba(0, 0, 0, 0.9) 0%,
-        rgba(0, 0, 0, 0.7) 50%,
-        rgba(0, 0, 0, 0.3) 80%,
-        transparent 100%
-    );
-    z-index: 2;
-    transform: translateZ(0); /* Hardware acceleration */
+    inset: 0;
+    pointer-events: none;
+    will-change: transform;
 }
 
 /* Map Container – height = viewport minus reserve so header + map fit on screen */
@@ -494,11 +449,6 @@ body {
         font-size: 1rem;
     }
     
-    /* Mobile map background (full-page atmosphere) */
-    .map-bg-image {
-        background-image: url('../src/images/mobile-map.jpg');
-    }
-    
     /* Map inner uses mobile map image */
     .map-inner {
         background-image: url('../src/images/mobile-maps.jpg');
@@ -508,11 +458,6 @@ body {
         aspect-ratio: 1080 / 1920;
     }
     
-    /* Adjust mist positioning for mobile */
-    .map-side-mist-left,
-    .map-side-mist-right {
-        width: 10%;
-    }
 }
 
 /* Tablet Responsiveness */

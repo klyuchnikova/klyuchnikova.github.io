@@ -1,4 +1,103 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // ----------  Vertical news feed: hero in center, snap, four states  ----------
+    const feed = document.querySelector('.news-feed');
+    const viewport = document.querySelector('.news-feed-viewport');
+    const track = document.querySelector('.news-feed-track');
+    const items = track ? track.querySelectorAll('.news-feed-item') : [];
+
+    if (feed && viewport && track && items.length) {
+        let scrollEndTimer = null;
+        const SNAP_DELAY_MS = 120;
+
+        function getViewportCenterY() {
+            var rect = viewport.getBoundingClientRect();
+            return rect.top + viewport.clientHeight / 2;
+        }
+
+        function getItemCenterY(el) {
+            var rect = el.getBoundingClientRect();
+            return rect.top + rect.height / 2;
+        }
+
+        function distanceToCenter(item) {
+            var viewCenter = getViewportCenterY();
+            var itemCenter = getItemCenterY(item);
+            return Math.abs(itemCenter - viewCenter);
+        }
+
+        function isInView(item) {
+            var rect = item.getBoundingClientRect();
+            var vh = viewport.clientHeight;
+            return rect.bottom > 0 && rect.top < vh;
+        }
+
+        function getClosestIndex() {
+            var closest = 0;
+            var minDist = Infinity;
+            items.forEach(function(item, i) {
+                var d = distanceToCenter(item);
+                if (d < minDist) {
+                    minDist = d;
+                    closest = i;
+                }
+            });
+            return closest;
+        }
+
+        function assignStates(heroIndex, isScrolling) {
+            items.forEach(function(item, i) {
+                item.classList.remove('state-invisible', 'state-background', 'state-candidate', 'state-hero');
+                if (!isInView(item)) {
+                    item.classList.add('state-invisible');
+                    return;
+                }
+                if (i === heroIndex) {
+                    item.classList.add(isScrolling ? 'state-candidate' : 'state-hero');
+                    return;
+                }
+                item.classList.add('state-background');
+            });
+        }
+
+        function snapToClosest() {
+            var heroIndex = getClosestIndex();
+            var item = items[heroIndex];
+            if (!item) return;
+            var itemTop = item.offsetTop;
+            var itemHeight = item.offsetHeight;
+            var viewHeight = viewport.clientHeight;
+            var targetScroll = itemTop - (viewHeight / 2) + (itemHeight / 2);
+            targetScroll = Math.max(0, Math.min(viewport.scrollHeight - viewHeight, targetScroll));
+            viewport.scrollTo({ top: targetScroll, behavior: 'smooth' });
+            assignStates(heroIndex, false);
+            feed.classList.toggle('hero-is-first', heroIndex === 0);
+        }
+
+        function onScroll() {
+            var heroIndex = getClosestIndex();
+            assignStates(heroIndex, true);
+            clearTimeout(scrollEndTimer);
+            scrollEndTimer = setTimeout(function() {
+                snapToClosest();
+            }, SNAP_DELAY_MS);
+        }
+
+        viewport.addEventListener('scroll', onScroll, { passive: true });
+
+        function centerCard(index) {
+            var item = items[index];
+            if (!item) return;
+            var targetScroll = item.offsetTop - (viewport.clientHeight / 2) + (item.offsetHeight / 2);
+            targetScroll = Math.max(0, Math.min(viewport.scrollHeight - viewport.clientHeight, targetScroll));
+            viewport.scrollTop = targetScroll;
+        }
+
+        centerCard(0);
+        assignStates(0, false);
+        feed.classList.toggle('hero-is-first', true);
+        onScroll();
+    }
+
     // Flip card functionality
     const flipCards = document.querySelectorAll('.square-flip');
 
@@ -49,31 +148,13 @@ document.addEventListener('DOMContentLoaded', function() {
 // Enhanced parallax effect
 document.addEventListener('DOMContentLoaded', function() {
     const bgTiles = document.querySelector('.news-bg-tiles');
-    const newsGrid = document.querySelector('.news-grid');
-    
     window.addEventListener('scroll', function() {
         const scrollY = window.scrollY;
-        // Subtle parallax effect (adjust 0.01 for stronger/weaker effect)
-        bgTiles.style.transform = `translateY(${-scrollY * 0.01}px)`;
-        // Content lift effect
-        newsGrid.style.transform = `translateZ(20px)`;
+        if (bgTiles) bgTiles.style.transform = 'translateY(' + (-scrollY * 0.01) + 'px)';
     });
 });
 
-document.addEventListener('DOMContentLoaded', function() {
-    const img1 = new Image();
-    const img2 = new Image();
-    
-    img1.src = '../src/images/news_background_mobile.jpeg';
-    img2.src = '../src/images/news_background_mobile_flip.jpeg';
-    
-    img1.onload = img2.onload = function() {
-        console.log('Images loaded. Heights:', img1.height, img2.height);
-        // If heights differ, adjust background-position in CSS
-    };
-});
-
-// Replace your existing glass-banner code in news.js with this:
+// Glass-banner marquee
 document.addEventListener('DOMContentLoaded', function() {
     const banner = document.querySelector('.glass-banner');
     const content = banner.querySelector('.glass-banner-content');

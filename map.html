@@ -39,12 +39,12 @@
     <!-- Mobile Menu Overlay -->
     <div class="menu-overlay"></div>
 
-    <!-- Map Background Container -->
+    <!-- Map Background: layer 1 = dark fill + animated; layer 2 = scroll parallax (slower) -->
     <div class="map-bg-container">
-        <div class="map-bg-image"></div>
-        <div class="map-mist-overlay"></div>
-        <div class="map-side-mist-left"></div>
-        <div class="map-side-mist-right"></div>
+        <div class="map-bg-base">
+            <div class="map-bg-animated" aria-hidden="true"></div>
+        </div>
+        <div class="map-bg-parallax" aria-hidden="true"></div>
     </div>
 
     <!-- Main Map Container -->

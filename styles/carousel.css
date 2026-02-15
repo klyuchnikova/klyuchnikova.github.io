@@ -101,7 +101,6 @@
         transform: none !important;
     }
     
-    /* Increase carousel height for mobile cards */
     .cards {
         height: 500px; /* Increased from 400px to accommodate taller mobile cards */
     }

@@ -2,6 +2,10 @@
 /* Add this to your style.css */
 html {
     height: 100%;
+    overflow-x: hidden;
+    overscroll-behavior-x: none;
+    /* Prevent horizontal drag/scroll on mobile */
+    touch-action: pan-y pinch-zoom;
 }
 
 body {
@@ -13,6 +17,9 @@ body {
     font-family: Arial, sans-serif;
     color: white;
     overflow-x: hidden;
+    overscroll-behavior-x: none;
+    touch-action: pan-y pinch-zoom;
+    max-width: 100%;
 }
 
 /* Видео/GIF фон */
@@ -20,7 +27,7 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
+    width: 100%;
     height: 100vh;
     z-index: -2;
     overflow: hidden;
@@ -41,7 +48,7 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
+    width: 100%;
     height: 100vh;
     background: radial-gradient(
         ellipse at center,

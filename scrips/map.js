@@ -21,14 +21,13 @@ const MAP_BUILDINGS = [
 // =============================================================================
 
 const MOBILE_BREAKPOINT = 768;
-const PARALLAX_FACTOR = 0.2;  // full-page background moves slower, same direction
 
 class CyberpunkMap {
     constructor() {
         this.map = document.getElementById('interactiveMap');
         this.mapInner = document.getElementById('mapInner');
         this.markersContainer = document.getElementById('buildingMarkers');
-        this.bgImage = document.querySelector('.map-bg-image');
+        this.bgParallax = document.querySelector('.map-bg-parallax');
         this.zoomLevel = 1;
         this.isDragging = false;
         this.dragStart = { x: 0, y: 0 };
@@ -47,7 +46,19 @@ class CyberpunkMap {
         this.setupZoomControls();
         this.setupFullscreen();
         this.setupResetView();
+        this.setupBgParallax();
         window.addEventListener('resize', this.handleResize.bind(this));
+    }
+
+    setupBgParallax() {
+        if (!this.bgParallax) return;
+        const factor = 0.3;
+        const onScroll = () => {
+            const y = window.scrollY * factor;
+            this.bgParallax.style.transform = `translate3d(0, ${y}px, 0)`;
+        };
+        onScroll();
+        window.addEventListener('scroll', onScroll, { passive: true });
     }
 
     isMobileView() {
@@ -189,11 +200,6 @@ class CyberpunkMap {
         const transform = `translate(${tx}px, ${ty}px) scale(${this.zoomLevel})`;
         this.mapInner.style.transform = transform;
         this.markersContainer.style.transform = 'none';
-        if (this.bgImage) {
-            const px = tx * PARALLAX_FACTOR;
-            const py = ty * PARALLAX_FACTOR;
-            this.bgImage.style.transform = `translate(${px}px, ${py}px)`;
-        }
     }
 
     updateMarkerSizes() {
