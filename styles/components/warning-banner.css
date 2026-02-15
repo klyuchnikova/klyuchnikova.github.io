@@ -65,6 +65,15 @@
     animation: warning-banner-stripes-left 14s linear infinite;
 }
 
+/* Strips 2 and 4: scroll right-to-left (reverse stripe direction) */
+.warning-banner--stripes-move.warning-banner--stripes-reverse .warning-banner__edge:not(.warning-banner__edge--bottom) {
+    animation: warning-banner-stripes-left 14s linear infinite;
+}
+
+.warning-banner--stripes-move.warning-banner--stripes-reverse .warning-banner__edge--bottom {
+    animation: warning-banner-stripes-right 14s linear infinite;
+}
+
 @keyframes warning-banner-stripes-right {
     0% { background-position: 0 0; }
     100% { background-position: 40px 0; }
@@ -227,4 +236,143 @@
 @keyframes warning-banner-slide-in-left {
     from { transform: translateX(-100%); }
     to { transform: translateX(0); }
+}
+
+/* ----------  Frame around hero card (4 edges: top two, bottom two; all on top)  ---------- */
+.warning-banner-frame {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 52;
+}
+
+/* Fifth strip container: behind the feed/card (prepended to body, z-index below .news-feed which is 1) */
+.warning-banner-frame--back {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.warning-banner--frame-extra-top {
+    transform-origin: left center;
+}
+
+.warning-banner--frame-edge {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: auto;
+    bottom: auto;
+    width: 100px;
+    height: 24px;
+    transform: rotate(var(--frame-angle, 0deg));
+    transform-origin: left center;
+}
+
+.warning-banner--frame-z1 { z-index: 52; }
+.warning-banner--frame-z2 { z-index: 53; }
+.warning-banner--frame-z3 { z-index: 54; }
+.warning-banner--frame-z4 { z-index: 55; }
+
+/* Bottom strips: roll from right — origin at right edge (same pattern as .warning-banner--stripes-reverse: both modifiers on element) */
+.warning-banner--frame-edge.warning-banner--frame-roll-right {
+    transform-origin: right center;
+}
+
+/* Frame appear: top strips roll in from left */
+.warning-banner-frame--appearing .warning-banner--frame-edge {
+    animation: warning-banner-frame-roll-in 1.1s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+/* Bottom strips: roll in from RIGHT (mirrored), same compound-selector pattern as stripes-reverse */
+.warning-banner-frame--appearing .warning-banner--frame-edge.warning-banner--frame-roll-right {
+    animation: warning-banner-frame-roll-in-right 1.1s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+.warning-banner-frame--appearing .warning-banner--frame-z1 { animation-delay: 0ms; }
+.warning-banner-frame--appearing .warning-banner--frame-z2 { animation-delay: 80ms; }
+.warning-banner-frame--appearing .warning-banner--frame-z3 { animation-delay: 160ms; }
+.warning-banner-frame--appearing .warning-banner--frame-z4 { animation-delay: 240ms; }
+.warning-banner-frame--appearing .warning-banner--frame-extra-top { animation-delay: 0ms; }
+
+@keyframes warning-banner-frame-roll-in {
+    0% {
+        transform: rotate(var(--frame-angle)) translateX(-100%);
+    }
+    52% {
+        transform: rotate(var(--frame-angle)) translateX(0);
+    }
+    68% {
+        transform: rotate(var(--frame-angle)) translateX(4%);
+    }
+    82% {
+        transform: rotate(var(--frame-angle)) translateX(-1.5%);
+    }
+    92% {
+        transform: rotate(var(--frame-angle)) translateX(0.5%);
+    }
+    100% {
+        transform: rotate(var(--frame-angle)) translateX(0);
+    }
+}
+
+/* Mirrored: roll in from right, with wavy settle */
+@keyframes warning-banner-frame-roll-in-right {
+    0% {
+        transform: rotate(var(--frame-angle)) translateX(100%);
+    }
+    52% {
+        transform: rotate(var(--frame-angle)) translateX(0);
+    }
+    68% {
+        transform: rotate(var(--frame-angle)) translateX(-4%);
+    }
+    82% {
+        transform: rotate(var(--frame-angle)) translateX(1.5%);
+    }
+    92% {
+        transform: rotate(var(--frame-angle)) translateX(-0.5%);
+    }
+    100% {
+        transform: rotate(var(--frame-angle)) translateX(0);
+    }
+}
+
+/* Frame disappear: top strips roll out to the right + fade */
+.warning-banner-frame--disappearing .warning-banner--frame-edge {
+    animation: warning-banner-frame-roll-out 0.35s cubic-bezier(0.55, 0.06, 0.68, 0.19) forwards;
+}
+
+/* Bottom strips: roll out to the LEFT (mirrored) + fade */
+.warning-banner-frame--disappearing .warning-banner--frame-edge.warning-banner--frame-roll-right {
+    animation: warning-banner-frame-roll-out-left 0.35s cubic-bezier(0.55, 0.06, 0.68, 0.19) forwards;
+}
+
+@keyframes warning-banner-frame-roll-out {
+    0% {
+        transform: rotate(var(--frame-angle)) translateX(0);
+        opacity: 1;
+    }
+    100% {
+        transform: rotate(var(--frame-angle)) translateX(100%);
+        opacity: 0;
+    }
+}
+
+@keyframes warning-banner-frame-roll-out-left {
+    0% {
+        transform: rotate(var(--frame-angle)) translateX(0);
+        opacity: 1;
+    }
+    100% {
+        transform: rotate(var(--frame-angle)) translateX(-100%);
+        opacity: 0;
+    }
 }

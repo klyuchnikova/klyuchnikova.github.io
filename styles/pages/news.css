@@ -39,6 +39,7 @@ body {
 /* Feed: full width, fixed height, scrollable. Card style unchanged; only layout here. */
 .news-feed {
     position: relative;
+    z-index: 1;
     width: 100%;
     height: calc(100vh - 60px);
     min-height: 320px;
