@@ -38,7 +38,7 @@
     width: 60px;
     height: 60px;
     rotate: 90deg;
-    background-image: url('../src/images/🚀tile3.svg');
+    background-image: url('../../src/images/🚀tile3.svg');
 }
 
 .corner-tile.top-right {
@@ -46,7 +46,7 @@
     right: 15px;
     width: 50px;
     height: 35px;
-    background-image: url('../src/images/🚀tile2.svg');
+    background-image: url('../../src/images/🚀tile2.svg');
 }
 
 .corner-tile.bottom-left {
@@ -54,7 +54,7 @@
     left: 15px;
     width: 30px;
     height: 30px;
-    background-image: url('../src/images/🚀tile1.svg');
+    background-image: url('../../src/images/🚀tile1.svg');
 }
 
 .corner-tile.bottom-right {
@@ -63,7 +63,7 @@
     width: 40px;
     height: 60px;
     rotate: -90deg;
-    background-image: url('../src/images/🚀tile4.svg');
+    background-image: url('../../src/images/🚀tile4.svg');
 }
 
 

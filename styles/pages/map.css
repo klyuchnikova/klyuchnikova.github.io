@@ -136,7 +136,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('../src/images/desktop-maps.jpg');
+    background-image: url('../../src/images/desktop-maps.jpg');
     background-size: 100% 100%;
     background-position: center;
     background-repeat: no-repeat;
@@ -451,7 +451,7 @@ body {
     
     /* Map inner uses mobile map image */
     .map-inner {
-        background-image: url('../src/images/mobile-maps.jpg');
+        background-image: url('../../src/images/mobile-maps.jpg');
     }
     
     .interactive-map {

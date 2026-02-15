@@ -1,0 +1,145 @@
+/**
+ * Glass banner – fixed bottom neon strip with scrolling text.
+ * Reusable; include this file on any page that uses .glass-banner.
+ */
+
+.glass-banner {
+    --glass-banner-text-size: 3rem;
+    position: fixed;
+    bottom: 12px;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: calc(var(--glass-banner-text-size) * 1.15);
+    min-height: 2.5rem;
+    display: flex;
+    align-items: stretch;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.2);
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.9);
+    filter: contrast(1.2);
+    animation: scroll 20s linear infinite;
+    z-index: 50;
+    pointer-events: none;
+}
+
+/* Top/bottom neon lines – yellow, same glow as inner parallelograms, thicker */
+.glass-banner::before,
+.glass-banner::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background-color: #ffcc00;
+    box-shadow:
+        0 0 8px #ffcc00,
+        0 0 16px rgba(255, 204, 0, 0.9),
+        0 0 24px rgba(255, 204, 0, 0.7);
+    filter: brightness(1.1);
+    z-index: 1;
+}
+.glass-banner::before {
+    top: 0;
+    box-shadow:
+        0 0 8px #ffcc00,
+        0 0 16px rgba(255, 204, 0, 0.9),
+        0 0 24px rgba(255, 204, 0, 0.7),
+        0 2px 6px rgba(255, 204, 0, 0.5);
+}
+.glass-banner::after {
+    bottom: 0;
+    box-shadow:
+        0 0 8px #ffcc00,
+        0 0 16px rgba(255, 204, 0, 0.9),
+        0 0 24px rgba(255, 204, 0, 0.7),
+        0 -2px 6px rgba(255, 204, 0, 0.5);
+}
+
+.glass-banner-content {
+    display: flex;
+    align-items: stretch;
+    white-space: nowrap;
+    transform: skewX(-40deg);
+    animation: scroll-banner 15s linear infinite;
+}
+
+.glass-banner:hover .glass-banner-content {
+    animation-duration: 10s;
+}
+
+.glass-banner-text {
+    color: rgba(255, 255, 255, 0.9);
+    padding: 0 20px;
+    font-family: "PixelArt", monospace;
+    font-size: var(--glass-banner-text-size, 3rem);
+    letter-spacing: 2px;
+    white-space: nowrap;
+    margin: 0 2vw;
+    align-self: center;
+}
+
+.glass-banner-parallelogram {
+    width: 25px;
+    height: 100%;
+    min-height: 0;
+    margin: 0 10px;
+    background-color: #ffcc00;
+    position: relative;
+    box-shadow:
+        0 0 8px #ffcc00,
+        0 0 16px rgba(255, 204, 0, 0.9),
+        0 0 24px rgba(255, 204, 0, 0.7);
+    filter: brightness(1.1);
+}
+
+.glass-banner-parallelogram::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px solid #ffeb3b;
+    z-index: 0;
+    filter: blur(1px);
+    box-shadow: 0 0 6px #ffcc00;
+}
+
+@keyframes scroll-banner {
+    0% {
+        transform: skewX(-20deg) translateX(0);
+    }
+    100% {
+        transform: skewX(-20deg) translateX(-50%);
+    }
+}
+
+.glass-banner-content-wrapper {
+    display: flex;
+}
+
+.glass-banner-original,
+.glass-banner-duplicate {
+    display: flex;
+    align-items: stretch;
+}
+
+/* Smaller text/height on narrow viewports */
+@media (max-width: 768px) {
+    .glass-banner {
+        --glass-banner-text-size: 2rem;
+        min-height: 2.25rem;
+    }
+
+    .glass-banner-parallelogram {
+        width: 18px;
+    }
+
+    .glass-banner-text {
+        padding: 0 12px;
+        letter-spacing: 1px;
+    }
+}
