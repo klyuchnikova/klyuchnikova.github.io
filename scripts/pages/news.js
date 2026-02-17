@@ -1,4 +1,14 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Inject reusable arrow SVG into each .btn-icon-arrow (from template)
+    const arrowTemplate = document.getElementById('arrow-icon-svg');
+    if (arrowTemplate && arrowTemplate.content) {
+        document.querySelectorAll('.btn-icon-arrow').forEach(function(container) {
+            if (container.children.length === 0) {
+                container.appendChild(arrowTemplate.content.cloneNode(true));
+            }
+        });
+    }
+
     // ----------  Vertical news feed: hero in center, snap, four states  ----------
     const feed = document.querySelector('.news-feed');
     const viewport = document.querySelector('.news-feed-viewport');
@@ -312,26 +322,29 @@ document.addEventListener('DOMContentLoaded', function() {
         /* Frame strips appear only when first card is centered after snap (see snapToClosest). */
     }
 
-    // Flip card functionality
+    // Flip card functionality – single bar button: READ MORE opens, BACK closes
     const flipCards = document.querySelectorAll('.square-flip');
 
     flipCards.forEach(card => {
-        const readMoreBtn = card.querySelector('.read-more-btn');
-        const flipBackBtn = card.querySelector('.flip-back-btn');
-        
-        readMoreBtn.addEventListener('click', (e) => {
+        const barBtn = card.querySelector('.bar-toggle-btn');
+        if (!barBtn) return;
+
+        barBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            card.classList.add('flipped');
-        });
-        
-        flipBackBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            card.classList.remove('flipped');
-        });
-        
-        card.addEventListener('click', (e) => {
             if (card.classList.contains('flipped')) {
                 card.classList.remove('flipped');
+                barBtn.classList.remove('is-opening');
+            } else {
+                barBtn.classList.add('is-opening');
+                card.classList.add('flipped');
+            }
+        });
+
+        card.addEventListener('click', (e) => {
+            if (e.target.closest('.bar-toggle-btn')) return;
+            if (card.classList.contains('flipped')) {
+                card.classList.remove('flipped');
+                barBtn.classList.remove('is-opening');
             }
         });
     });

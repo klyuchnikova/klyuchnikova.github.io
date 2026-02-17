@@ -108,10 +108,12 @@ body {
     z-index: 1;
     width: 100%;
     height: 100%;
+    min-height: 280px;
 }
 
 .news-feed-item .square-front {
     height: 100%;
+    min-height: 260px;
 }
 
 /* Four states: only transform/opacity/filter; card style unchanged */
@@ -145,19 +147,7 @@ body {
     box-shadow: 0 0 28px rgba(0, 200, 255, 0.35), 0 0 56px rgba(0, 200, 255, 0.12);
 }
 
-/* Flip (read more) overrides feed state transform so card can show back */
-.news-feed-item .square-flip.flipped {
-    transform: rotateY(180deg);
-}
-.news-feed-item.state-background .square-flip.flipped {
-    transform: scale(0.92) rotateY(180deg);
-}
-.news-feed-item.state-candidate .square-flip.flipped {
-    transform: scale(0.97) rotateY(180deg);
-}
-.news-feed-item.state-hero .square-flip.flipped {
-    transform: scale(1) rotateY(180deg);
-}
+/* Open (slide) state: no extra transform on .square-flip; track slides inside */
 
 /* "Last news" animation: when first card is hero */
 .news-feed.hero-is-first .news-feed-item.state-hero .square-flip {
@@ -181,50 +171,200 @@ body {
     box-sizing: border-box;
 }
 
-/* Flip card container */
+/* Card container: slide open (front slides left, back slides in from right) */
 .square-flip {
-    perspective: 1000px;
-    transform-style: preserve-3d;
-    transition: transform 0.8s;
-    transform-origin: center center;
     width: 100%;
     margin: 0 auto;
+    overflow: hidden;
+    position: relative;
 }
 
-/* Card shape: rectangular with top-left and bottom-right sliced at ~40% width, sharp angle */
+.square-flip__track {
+    display: flex;
+    width: 200%;
+    height: 100%;
+    min-height: 300px;
+    transition: transform 0.5s ease-out;
+    will-change: transform;
+}
+
+.square-flip.flipped .square-flip__track {
+    transform: translateX(-50%);
+}
+
+/* Shared bottom bar: fixed at card bottom; gradient + content animate (no roll with card) */
+.square-flip__bottom-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    background: black;
+    padding: 6px 10px;
+    box-sizing: border-box;
+    box-shadow:
+        0 1px 0 rgba(0, 200, 255, 0.12),
+        0 4px 14px rgba(0, 200, 255, 0.06),
+        0 10px 32px rgba(0, 0, 0, 0.75),
+        0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.square-flip__bar-gradient {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Initial: orange glow on the RIGHT side only. Flipped: orange glow on the LEFT side only. Crossfade during flip. */
+.square-flip__bar-gradient::before,
+.square-flip__bar-gradient::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    mix-blend-mode: screen;
+    transition: opacity 0.5s ease-out;
+}
+
+/* Orange on the right (visible when not flipped) */
+.square-flip__bar-gradient::before {
+    background: linear-gradient(90deg,
+                transparent 0%,
+                transparent 45%,
+                rgba(255, 107, 0, 0.35) 100%);
+    opacity: 1;
+}
+
+/* Orange on the left (visible when flipped) */
+.square-flip__bar-gradient::after {
+    background: linear-gradient(90deg,
+                rgba(255, 107, 0, 0.35) 0%,
+                transparent 55%,
+                transparent 100%);
+    opacity: 0;
+}
+
+.square-flip.flipped .square-flip__bar-gradient::before {
+    opacity: 0;
+}
+
+.square-flip.flipped .square-flip__bar-gradient::after {
+    opacity: 1;
+}
+
+.square-flip__bar-content {
+    position: relative;
+    z-index: 1;
+    min-height: 40px;
+    padding: 0 10px;
+    box-sizing: border-box;
+}
+
+/* Reactions: positioned relative to bar left, width by content so button has room */
+.square-flip__bar-content .reactions {
+    margin-left: 0;
+    flex: 0 1 auto;
+    max-width: calc(100% - 140px); /* leave room for button so it can sit on the right */
+    transition: opacity 0.5s ease-out;
+}
+
+/* When flipped, remove reactions from layout so button’s left:50% is true bar center */
+.square-flip.flipped .square-flip__bar-content .reactions {
+    position: absolute;
+    left: -9999px;
+    width: 0;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease-out;
+}
+
+/* Button: anchored to the right so it can slide left to far left when flipped */
+.square-flip__bar-content .read-more-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%) skewX(-15deg);
+    transition: left 0.5s ease-out, right 0.5s ease-out, transform 0.5s ease-out,
+                border-color 0.5s, box-shadow 0.5s, background 0.5s;
+}
+
+.square-flip.flipped .square-flip__bar-content .read-more-btn {
+    left: 10px;
+    right: auto;
+    transform: translateY(-50%) skewX(15deg);
+}
+
+/* Only direct children of the button get counter-skew so "READ MORE" / "BACK" text stays straight */
+.square-flip__bar-content .read-more-btn > .btn-label-read {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3em;
+    transform: skewX(15deg);
+}
+
+.square-flip__bar-content .read-more-btn > .btn-label-back {
+    display: none;
+    transform: skewX(-15deg);
+}
+
+.square-flip.flipped .square-flip__bar-content .read-more-btn > .btn-label-read {
+    display: none;
+}
+
+.square-flip.flipped .square-flip__bar-content .read-more-btn > .btn-label-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3em;
+    transform: skewX(-15deg);
+}
+
+/* Inner spans (text + icon) must not be skewed again */
+.square-flip__bar-content .read-more-btn .btn-label-read span,
+.square-flip__bar-content .read-more-btn .btn-label-back span {
+    transform: none;
+}
+
+.square-flip.flipped .bar-toggle-btn {
+    border-color: white;
+}
+
+.square-flip.flipped .bar-toggle-btn:hover {
+    box-shadow: 6px 6px 0 black;
+    background: rgba(0, 255, 127, 0.1);
+}
+
+/* Spacer: reserves space so headers sit above the bar; no full-bleed so layout stays correct */
+.bottom-controls--spacer {
+    min-height: 40px;
+    padding: 6px 0;
+    margin-top: 8px;
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+    visibility: hidden;
+    pointer-events: none;
+    box-sizing: border-box;
+}
+
+.square-back__bar--hidden {
+    display: none;
+}
+
+/* Card shape: rectangular with top-left and bottom-right sliced; each panel 50% of track */
 .square-front {
     position: relative;
-    width: 100%;
-    height: 300px;
+    flex: 0 0 50%;
+    width: 50%;
+    min-width: 0;
+    height: 100%;
+    min-height: 300px;
     overflow: hidden;
+    box-sizing: border-box; /* so 50% includes border and meets back panel exactly */
     background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border: 2px solid rgba(255, 255, 255, 0.2);
-    clip-path: polygon(
-        40% 0,      /* top after top-left cut */
-        100% 0,
-        100% 92%,   /* right before bottom-right cut */
-        60% 100%,   /* bottom after bottom-right cut */
-        0 100%,
-        0 8%        /* left after top-left cut */
-    );
-    backface-visibility: hidden;
-}
-
-.square-back {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(20, 20, 30, 0.95);
-    backdrop-filter: blur(5px);
-    transform: rotateY(180deg);
-    backface-visibility: hidden;
-    padding: 20px;
-    box-sizing: border-box;
-    overflow-y: auto;
     clip-path: polygon(
         40% 0,
         100% 0,
@@ -235,8 +375,66 @@ body {
     );
 }
 
-.square-flip.flipped {
-    transform: rotateY(180deg);
+.square-back {
+    flex: 0 0 calc(50% + 3px);
+    width: calc(50% + 3px);
+    min-width: 0;
+    height: 100%;
+    min-height: 300px;
+    margin-left: -3px; /* overlap seam so no visible line from front card */
+    background: rgba(20, 20, 30, 0.95);
+    backdrop-filter: blur(5px);
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    clip-path: polygon(
+        40% 0,
+        100% 0,
+        100% 92%,
+        60% 100%,
+        0 100%,
+        0 8%
+    );
+}
+
+/* Back bar: same style as front bottom-controls but with mirrored gradient */
+.square-back__bar {
+    margin-top: auto;
+    background: black;
+    padding: 12px 15px;
+    margin-left: -20px;
+    margin-right: -20px;
+    width: calc(100% + 40px);
+    margin-bottom: -20px;
+    padding-bottom: 20px;
+    box-sizing: border-box;
+    box-shadow:
+        0 -1px 0 rgba(0, 200, 255, 0.12),
+        0 -4px 14px rgba(0, 200, 255, 0.06),
+        0 -10px 32px rgba(0, 0, 0, 0.75),
+        0 -4px 12px rgba(0, 0, 0, 0.5);
+    position: relative;
+}
+
+.square-back__bar::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: linear-gradient(315deg,
+                rgba(255, 107, 0, 0.35) 0%,
+                transparent 40%,
+                transparent 60%,
+                rgba(255, 107, 0, 0.35) 100%);
+    mix-blend-mode: screen;
+    pointer-events: none;
+}
+
+.square-back__bar .flip-back-btn {
+    position: relative;
+    z-index: 1;
 }
 
 .flip-back-btn {
@@ -271,6 +469,9 @@ body {
 
 /* Back content styling */
 .back-content {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
     color: rgba(255, 255, 255, 0.9);
     font-family: 'Courier New', monospace;
     line-height: 1.6;
@@ -509,19 +710,26 @@ body {
     background: rgba(255,255,255,0.1);
 }
 
-.read-more-btn span {
+/* Counter-skew only on direct children so label text stays straight (no double-skew on nested spans) */
+.read-more-btn > span {
     display: inline-block;
     transform: skewX(15deg);
 }
 
-.read-more-btn span:nth-child(2) {
+.read-more-btn .btn-icon-arrow {
     width: 20px;
     margin-left: 15px;
     position: relative;
-    transition: all 0.5s;
+    transition: margin-left 0.5s;
 }
 
-.read-more-btn:hover span:nth-child(2) {
+.read-more-btn .btn-icon-arrow,
+.read-more-btn .btn-label-read span,
+.read-more-btn .btn-label-back span {
+    transform: none;
+}
+
+.read-more-btn:hover .btn-icon-arrow {
     margin-left: 25px;
 }
 
@@ -536,18 +744,41 @@ body {
     transition: all 0.4s;
 }
 
-.read-more-btn:hover path.one {
-    transform: translateX(0%);
+/* Arrow animation always on for READ MORE only (staggered delays); BACK button arrows static */
+.read-more-btn .btn-label-read path.one {
     animation: arrowAnim 1s infinite 0.6s;
 }
 
-.read-more-btn:hover path.two {
-    transform: translateX(0%);
+.read-more-btn .btn-label-read path.two {
     animation: arrowAnim 1s infinite 0.4s;
 }
 
-.read-more-btn:hover path.three {
+.read-more-btn .btn-label-read path.three {
     animation: arrowAnim 1s infinite 0.2s;
+}
+
+.read-more-btn .btn-label-back path {
+    animation: none;
+}
+
+/* BACK button: same arrow SVG mirrored so it points left; mirror the SVG itself so it’s not affected by parent skew */
+.read-more-btn .btn-label-back .btn-icon-arrow {
+    margin-left: 0;
+    margin-right: 15px;
+}
+
+.read-more-btn .btn-label-back .btn-icon-arrow svg {
+    transform: scaleX(-1);
+}
+
+/* Button "cool" animation on click (in parallel with card open) */
+.read-more-btn.is-opening {
+    box-shadow: 6px 6px 0 black;
+    background: rgba(255,255,255,0.1);
+}
+
+.read-more-btn.is-opening .btn-icon-arrow {
+    margin-left: 25px;
 }
 
 @keyframes arrowAnim {
@@ -575,8 +806,6 @@ body {
     }
 
     .square-front {
-        width: 100%;
-        max-width: 100%;
         height: 300px; /* Same proportions as mobile feel */
     }
 }
@@ -659,12 +888,12 @@ body {
         min-height: 44px;
     }
     
-    .read-more-btn span:nth-child(2) {
+    .read-more-btn .btn-icon-arrow {
         width: 14px;
         margin-left: 8px;
     }
     
-    .read-more-btn:hover span:nth-child(2) {
+    .read-more-btn:hover .btn-icon-arrow {
         margin-left: 14px;
     }
 }
