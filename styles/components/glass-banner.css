@@ -21,7 +21,7 @@
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.9);
     filter: contrast(1.2);
     animation: scroll 20s linear infinite;
-    z-index: 50;
+    z-index: 90; /* Below nav (100), above news-side-fade (80) */
     pointer-events: none;
 }
 

@@ -238,7 +238,7 @@
     to { transform: translateX(0); }
 }
 
-/* ----------  Frame around hero card (4 edges: top two, bottom two; all on top)  ---------- */
+/* ----------  Frame around hero card (4 edges: top two, bottom two; below side-fade/glass/nav)  ---------- */
 .warning-banner-frame {
     position: fixed;
     top: 0;
@@ -246,10 +246,10 @@
     width: 100%;
     height: 100%;
     pointer-events: none;
-    z-index: 52;
+    z-index: 20; /* Hierarchy: nav 100 > glass-banner 90 > news-side-fade 80 > frame 20 > news-feed 10 */
 }
 
-/* Fifth strip container: behind the feed/card (prepended to body, z-index below .news-feed which is 1) */
+/* Fifth strip container: behind the feed/card */
 .warning-banner-frame--back {
     position: fixed;
     top: 0;
@@ -276,10 +276,10 @@
     transform-origin: left center;
 }
 
-.warning-banner--frame-z1 { z-index: 52; }
-.warning-banner--frame-z2 { z-index: 53; }
-.warning-banner--frame-z3 { z-index: 54; }
-.warning-banner--frame-z4 { z-index: 55; }
+.warning-banner--frame-z1 { z-index: 20; }
+.warning-banner--frame-z2 { z-index: 21; }
+.warning-banner--frame-z3 { z-index: 22; }
+.warning-banner--frame-z4 { z-index: 23; }
 
 /* Bottom strips: roll from right — origin at right edge (same pattern as .warning-banner--stripes-reverse: both modifiers on element) */
 .warning-banner--frame-edge.warning-banner--frame-roll-right {
