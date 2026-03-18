@@ -1,16 +1,85 @@
-<section class="cyber-contacts">
-    <div class="contact-card">
-      <h3>НЕЙРО-КОНТАКТЫ</h3>
-      <div class="contact-line">
-        <span class="contact-icon">📡</span>
-        <span>Telegram-бот: @NeoTokyo2089_bot</span>
-      </div>
-      <div class="contact-line">
-        <span class="contact-icon">⌨️</span>
-        <span>Ключ доступа: NEON-FUTURE-2089</span>
-      </div>
-      <div class="qr-code">
-        <img src="src/images/card1.png" alt="QR-код">
-      </div>
-    </div>
-</section>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact — Cyberpunk</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/augmented-ui@2/augmented-ui.min.css">
+    
+    <!-- Cyberpunk CSS Framework -->
+    <link rel="stylesheet" href="styles/cyberpunk/cyberpunk.css">
+    <link rel="stylesheet" href="styles/cyberpunk/cyber-grid.css">
+    <link rel="stylesheet" href="styles/cyberpunk/cyberpunk-integrated.css">
+    <script src="styles/cyberpunk/helper.js"></script>
+    
+    <link rel="stylesheet" href="styles/layout/header.css">
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/components/triangle-anim.css">
+    <link rel="stylesheet" href="styles/pages/contacts.css">
+</head>
+<body class="page-contacts">
+    <!-- Sticky Navigation -->
+    <nav class="cyber-razor-bottom-fixed">
+        <div class="logo">
+            <div class="cyberpunk-font-og fg-white">CYBERPUNK</div>
+        </div>
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <ul>
+            <li><a href="index.html">HOME</a></li>
+            <li><a href="map.html">MAP</a></li>
+            <li><a href="news.html">HEADLINES</a></li>
+            <li><a href="contacts.html">CONTACT</a></li>
+        </ul>
+    </nav>
+    
+    <!-- Mobile Menu Overlay -->
+    <div class="menu-overlay"></div>
+
+    <!-- Particles background (black page, particles visible on load) -->
+    <div id="tsparticles" class="particles-layer" aria-hidden="true"></div>
+
+    <!-- Content above particles -->
+    <main class="contacts-content">
+        <section class="cyber-contacts">
+            <div class="contact-card">
+                <h3>НЕЙРО-КОНТАКТЫ</h3>
+                <div class="contact-line">
+                    <span class="contact-icon">📡</span>
+                    <span>Telegram-бот: @NeoTokyo2089_bot</span>
+                </div>
+                <div class="contact-line">
+                    <span class="contact-icon">⌨️</span>
+                    <span>Ключ доступа: NEON-FUTURE-2089</span>
+                </div>
+                <div class="qr-code">
+                    <img src="src/images/card1.png" alt="QR-код">
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!--  <script src="https://cdn.jsdelivr.net/npm/tsparticles@1.49.0/tsparticles.min.js"></script> -->
+
+    <!--  <script src="https://cdn.jsdelivr.net/npm/tsparticles@1.18.0/dist/tsparticles.min.js"></script>  -->
+
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@1.18.0/dist/tsparticles.min.js"></script>
+    <script src="scripts/components/particles-config.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var id = 'tsparticles';
+            var config = window.particlesConfig;
+            if (!window.tsParticles || !config) return;
+            /* Optional 1-frame delay so container has layout; remove rAF wrapper to compare */
+            requestAnimationFrame(function() {
+                window.tsParticles.load(id, config);
+            });
+        });
+    </script>
+    <script src="scripts/components/mobile-menu.js"></script>
+</body>
+</html>

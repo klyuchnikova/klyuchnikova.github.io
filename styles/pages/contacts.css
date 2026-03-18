@@ -1,3 +1,21 @@
+/* Full-page black background; content above particles */
+body.page-contacts {
+    background: #000;
+    min-height: 100vh;
+}
+
+/* Particles visible on contacts (override triangle-anim default opacity) */
+.page-contacts #tsparticles.particles-layer {
+    opacity: 1;
+    z-index: 0;
+}
+
+.contacts-content {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+}
+
 .cyber-contacts {
     max-width: 600px;
     margin: 50px auto;

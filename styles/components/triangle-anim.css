@@ -1,0 +1,50 @@
+/* Particles layer: above video-background (-3), below gradient-overlay (-1) and content. Fade in on scroll via JS. */
+#tsparticles.particles-layer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: -2;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+/* Neon glow effect for particles — filter on animating canvas can cause lag/gaps */
+#tsparticles canvas {
+    /* LIGHTER (smoother): single drop-shadow */
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.5));
+    /* HEAVY (neon, can stutter): uncomment below and comment line above to compare */
+    /* filter:
+        drop-shadow(0 0 6px rgba(255, 255, 255, 0.8))
+        drop-shadow(0 0 12px rgba(255, 255, 255, 0.5))
+        drop-shadow(0 0 18px rgba(255, 255, 255, 0.3)); */
+    /* NONE (best performance): set filter: none; and remove the rest */
+}
+
+/* Optional: Add triangle pattern overlay */
+.triangle-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    background-image: 
+        linear-gradient(45deg, transparent 92%, rgba(255, 255, 255, 0.1) 100%),
+        repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 20px,
+            rgba(255, 255, 255, 0.02) 20px,
+            rgba(255, 255, 255, 0.02) 40px
+        );
+}
+
+/* Ensure content stays above particles (index) */
+body .content {
+    position: relative;
+    z-index: 1;
+}
