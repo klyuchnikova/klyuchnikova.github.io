@@ -44,6 +44,51 @@ nav.scrolled {
     position: relative;
 }
 
+/* CYBERPUNK logo — subtle repeating glitch (~5s), cyberpunk palette (see cyberpunk.css glitches region) */
+.logo .cyberpunk-font-og {
+    display: inline-block;
+    transform-origin: center center;
+    animation: nav-logo-glitch 5s linear infinite;
+}
+
+@keyframes nav-logo-glitch {
+    0%,
+    88%,
+    91%,
+    95%,
+    100% {
+        transform: translate(0, 0) skew(0deg);
+        filter: none;
+    }
+    /* burst 1 — RGB split + nudge (like cyber-glitch-1 invert vibe, without full invert) */
+    89% {
+        transform: translate(-2px, 0) skew(-0.8deg);
+        filter: drop-shadow(-3px 0 0 rgba(255, 0, 60, 0.75))
+            drop-shadow(3px 0 0 rgba(0, 255, 210, 0.65));
+    }
+    90% {
+        transform: translate(2px, 1px) skew(0.5deg);
+        filter: drop-shadow(2px 0 0 rgba(255, 0, 60, 0.55))
+            drop-shadow(-2px 0 0 rgba(0, 255, 210, 0.55));
+    }
+    /* burst 2 — smaller hitch later in the cycle */
+    93% {
+        transform: translate(1px, -1px);
+        filter: drop-shadow(-2px 0 0 rgba(255, 0, 60, 0.45))
+            drop-shadow(2px 0 0 rgba(0, 255, 210, 0.4));
+    }
+    94% {
+        transform: translate(-1px, 0);
+        filter: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .logo .cyberpunk-font-og {
+        animation: none;
+    }
+}
+
 nav ul {
     display: flex;
     list-style: none;
