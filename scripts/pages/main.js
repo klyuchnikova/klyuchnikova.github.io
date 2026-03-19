@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Параллакс-эффект для фона
     const videoBg = document.querySelector('.video-background');
-    const gradient = document.querySelector('.gradient-overlay');
+    /* First .gradient-overlay is inside .headline (scrolls away); use fixed layer for scroll darken */
+    const gradient = document.querySelector('.gradient-overlay--scroll');
     const contentHeight = document.body.scrollHeight;
     const windowHeight = window.innerHeight;
     const maxScroll = contentHeight - windowHeight;
@@ -15,18 +16,19 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('scroll', function() {
         const scrollPos = window.scrollY;
 
-        // 1. Движение фона (параллакс)
-        const bgOffset = Math.min(scrollPos * bgSpeed, bgScrollableHeight);
-        videoBg.style.transform = `translateY(${bgOffset}px)`;
+        if (videoBg) {
+            const bgOffset = Math.min(scrollPos * bgSpeed, bgScrollableHeight);
+            videoBg.style.transform = `translateY(${bgOffset}px)`;
+        }
 
-        // 2. Затемнение и размытие градиента (без движения)
-        const progress = Math.min(scrollPos / effectEndPoint, 1); // 0-1
-        const darkness = progress * maxDarkness;
-        const blur = progress * maxBlur;
-
-        gradient.style.opacity = darkness;
-        gradient.style.backdropFilter = `blur(${blur}px)`;
-        gradient.style.transform = 'none';
+        if (gradient) {
+            const progress = Math.min(scrollPos / effectEndPoint, 1);
+            const darkness = progress * maxDarkness;
+            const blur = progress * maxBlur;
+            gradient.style.opacity = String(darkness);
+            gradient.style.backdropFilter = `blur(${blur}px)`;
+            gradient.style.transform = 'none';
+        }
     });
 
     let lastScrollTop = 0;
@@ -127,6 +129,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const headline = document.querySelector('.headline');
     const inner = document.querySelector('.inner');
     const gifBackground = document.querySelector('.gif-background');
+    /* After hero intro animations, enable full neon + flicker (matches previous default .activated) */
+    if (document.body.classList.contains('page-index') && inner) {
+        const introMs = 1750;
+        setTimeout(function() {
+            inner.classList.add('activated');
+        }, introMs);
+    }
     
     // Sticky nav on scroll
     window.addEventListener('scroll', function() {
@@ -150,7 +159,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-document.querySelector('.inner').addEventListener('click', function() {
+document.querySelector('.inner')?.addEventListener('click', function() {
     this.classList.toggle('activated');
-    document.querySelector('header').classList.toggle('neon-active');
+    document.querySelector('header')?.classList.toggle('neon-active');
 });

@@ -20,8 +20,9 @@
     <link rel="stylesheet" href="styles/components/modal_card.css">
     <link rel="stylesheet" href="styles/layout/header.css">
     <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/pages/index-intro.css">
 </head>
-<body>
+<body class="page-index">
     <!-- Sticky Navigation -->
     <nav class="cyber-razor-bottom-fixed">
         <div class="logo">
@@ -43,11 +44,14 @@
     <!-- Mobile Menu Overlay -->
     <div class="menu-overlay"></div>
 
+    <!-- First-visit hero intro: dark vignette over nav/edges, fades in ~1.6s (see index-intro.css) -->
+    <div class="index-hero-intro-vignette" aria-hidden="true"></div>
+
     <!-- Animated Header with GIF -->
     <header class="headline">
-        <div class="inner activated">
+        <div class="inner">
             <h1>NEO-FUTURE 2089</h1>
-            <p>Наше будущее в сосуществовании с машинами</p>
+            <p></p>
         </div>
         <div class="gif-background"></div>
         <div class="gradient-overlay"></div>
@@ -58,8 +62,8 @@
         <img src="src/images/background.gif" alt="Анимированный фон" class="gif-bg"> 
     </div>
 
-    <!-- Градиент с размытием -->
-    <div class="gradient-overlay"></div>
+    <!-- Fullscreen darken/blur on scroll (must stay fixed; see main.js) -->
+    <div class="gradient-overlay gradient-overlay--scroll"></div>
 
     <!-- Контент -->
     <div class="content">

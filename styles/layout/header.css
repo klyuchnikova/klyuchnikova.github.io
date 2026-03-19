@@ -233,14 +233,6 @@ nav a:hover::after {
         0 0 10px #fff,
         0 0 20px #b2ffff,
         0 0 40px #b2ffff;
-
-    background: linear-gradient(
-        to right,
-        transparent 0%,
-        rgba(0, 0, 20, 0.7) 100px,       /* 0-10px: fade in */
-        rgba(0, 0, 20, 0.7) calc(100% - 100px),  /* 10px to (100%-10px): solid 50% */
-        transparent 100%                  /* last 10px: fade out */
-    );
     display: inline-block;
     width: 100%;
     max-width: 800px;

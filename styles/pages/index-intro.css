@@ -1,0 +1,162 @@
+/**
+ * Index (main) hero — first-load intro only (body.page-index).
+ * Vignette masks nav/corners → fades; title powers up; slight 3D / dolly on hero + BG.
+ */
+
+/* Corner + edge vignette: sits above nav (z-index 100), fades out ~1.6s */
+.page-index .index-hero-intro-vignette {
+    position: fixed;
+    inset: 0;
+    z-index: 120;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 75% 65% at 50% 50%, transparent 32%, rgba(0, 0, 0, 0.88) 100%),
+        radial-gradient(circle at 0 0, rgba(0, 0, 0, 0.95) 0%, transparent 50%),
+        radial-gradient(circle at 100% 0, rgba(0, 0, 0, 0.95) 0%, transparent 50%),
+        radial-gradient(circle at 0 100%, rgba(0, 0, 0, 0.95) 0%, transparent 50%),
+        radial-gradient(circle at 100% 100%, rgba(0, 0, 0, 0.95) 0%, transparent 50%);
+    opacity: 1;
+    animation: index-intro-vignette-out 1.65s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+@keyframes index-intro-vignette-out {
+    0% {
+        opacity: 1;
+        filter: contrast(1.05) brightness(0.92);
+    }
+    75% {
+        opacity: 0.35;
+    }
+    100% {
+        opacity: 0;
+        visibility: hidden;
+        filter: none;
+    }
+}
+
+/* Hero stage — 3D space for inner content */
+.page-index .headline {
+    perspective: 1200px;
+    perspective-origin: 50% 42%;
+}
+
+/* Hero copy: slight tilt + settle (works with scroll opacity script afterwards) */
+.page-index .headline .inner {
+    transform-style: preserve-3d;
+    animation: index-hero-inner-settle 1.75s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+@keyframes index-hero-inner-settle {
+    0% {
+        transform: translateY(18px) scale(0.94) rotateX(7deg);
+        filter: brightness(0.75);
+    }
+    100% {
+        transform: translateY(0) scale(1) rotateX(0deg);
+        filter: brightness(1);
+    }
+}
+
+/* Title: power-on from dim idle → full neon (before .activated + neon-flicker kicks in) */
+.page-index .headline .inner:not(.activated) h1 {
+    animation: index-hero-title-light-up 1.55s ease-out 0.08s forwards;
+}
+
+@keyframes index-hero-title-light-up {
+    0% {
+        color: #1e58af;
+        text-shadow:
+            0 0 2px rgba(0, 0, 0, 0.85),
+            0 0 6px rgba(10, 138, 138, 0.25);
+        filter: brightness(0.45) blur(0.08rem);
+        letter-spacing: 0.35rem;
+    }
+    45% {
+        color: #00a8d4;
+        text-shadow:
+            0 0 8px #fff,
+            0 0 16px #7ff9f9,
+            0 0 32px rgba(127, 249, 249, 0.7);
+        filter: brightness(0.95) blur(0);
+        letter-spacing: 0.45rem;
+    }
+    100% {
+        color: #7ff9f9;
+        text-shadow:
+            0 0 5px #fff,
+            0 0 10px #fff,
+            0 0 20px #7ff9f9,
+            0 0 40px #7ff9f9,
+            0 0 80px #7ff9f9;
+        filter: brightness(1);
+        letter-spacing: 0.5rem;
+    }
+}
+
+/* Subtitle fades / unblurs after title starts */
+.page-index .headline .inner:not(.activated) p {
+    animation: index-hero-subtitle-in 1.25s ease-out 0.45s forwards;
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+@keyframes index-hero-subtitle-in {
+    0% {
+        opacity: 0;
+        transform: translateY(14px);
+        filter: blur(4px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+    }
+}
+
+/* Fullscreen GIF: subtle dolly / scale so motion reads with the hero */
+.page-index .video-background .gif-bg {
+    transform-origin: center center;
+    animation: index-hero-bg-dolly 1.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes index-hero-bg-dolly {
+    0% {
+        transform: scale(1.1) translateY(3%);
+    }
+    100% {
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Mobile: allow subtitle visible during intro (header.css hides it otherwise) */
+@media (max-width: 768px) {
+    .page-index .headline .inner p {
+        visibility: visible !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .page-index .index-hero-intro-vignette {
+        animation: none;
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    .page-index .headline .inner {
+        animation: none;
+    }
+
+    .page-index .headline .inner:not(.activated) h1 {
+        animation: none;
+    }
+
+    .page-index .headline .inner:not(.activated) p {
+        animation: none;
+        opacity: 1;
+        transform: none;
+    }
+
+    .page-index .video-background .gif-bg {
+        animation: none;
+    }
+}
