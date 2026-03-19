@@ -4,54 +4,169 @@ body.page-contacts {
     min-height: 100vh;
 }
 
-/* Particles visible on contacts (override triangle-anim default opacity) */
 .page-contacts #tsparticles.particles-layer {
     opacity: 1;
     z-index: 0;
 }
 
 .contacts-content {
-    position: relative;
+    position: fixed;
+    inset: 0;
     z-index: 1;
-    min-height: 100vh;
-}
-
-.cyber-contacts {
-    max-width: 600px;
-    margin: 50px auto;
-    padding: 20px;
-}
-  
-.contact-card {
-    background: rgba(0, 20, 40, 0.8);
-    backdrop-filter: blur(8px);
-    border: 1px solid #00ccff;
-    border-radius: 5px;
-    padding: 30px;
-    box-shadow: 0 0 20px rgba(0, 200, 255, 0.3);
-}
-  
-.contact-line {
     display: flex;
     align-items: center;
-    margin: 15px 0;
-    font-size: 1.2em;
+    justify-content: center;
+    padding: 1rem;
+    box-sizing: border-box;
+    pointer-events: none;
 }
-  
-.contact-icon {
-    margin-right: 15px;
-    color: #00ccff;
-    font-size: 1.5em;
+
+.contacts-content > * {
+    pointer-events: auto;
 }
-  
-.qr-code {
+
+/* Glass box: sharp angles (augmented-ui), neon border, centered.
+   Glitch: add class "cyber-glitch-2" to .contact-glass-box when your single variable is set. */
+.contact-glass-box {
+    --contact-cyan: #00ccff;
+    --contact-cyan-dim: rgba(0, 200, 255, 0.4);
+    --contact-bg: rgba(0, 15, 30, 0.75);
+    --aug-border: 2px;
+    --aug-border-bg: var(--contact-cyan);
+    --og-clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    width: min(88vw, 20rem);
+    max-height: min(88vh, 28rem);
+    padding: clamp(1.25rem, 4vw, 2rem);
+    box-sizing: border-box;
+    background: var(--contact-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 2px solid var(--contact-cyan);
+    box-shadow:
+        0 0 12px var(--contact-cyan-dim),
+        0 0 24px rgba(0, 200, 255, 0.15),
+        inset 0 0 30px rgba(0, 200, 255, 0.03);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(1rem, 3vh, 1.5rem);
+    /* Sharp clipped corners via augmented-ui (tl-clip tr-clip bl-clip br-clip) */
+}
+
+/* Pixel-style greeting (same font as news yellow banner) */
+.contact-glass-greeting {
+    font-family: "PixelArt", monospace;
+    font-size: clamp(2.25rem, 4.5vw, 3.5rem);
+    font-weight: 700;
+    line-height: 2;
+    color: var(--contact-cyan);
+    text-shadow:
+        0 0 8px var(--contact-cyan-dim),
+        0 0 16px rgba(0, 200, 255, 0.2);
+    margin: 0;
+    flex-shrink: 0;
     text-align: center;
-    margin-top: 30px;
 }
-  
-.qr-code img {
-    width: 200px;
-    border: 2px solid #00ccff;
-    padding: 10px;
-    background: white;
+
+.contact-glass-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+    max-width: 100%;
+}
+
+.contact-glass-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.7rem 1rem;
+    font-family: "PixelArt", monospace;
+    font-size: clamp(0.95rem, 2.8vw, 1.1rem);
+    color: #fff;
+    background: rgba(0, 0, 0, 0.4);
+    border: 2px solid var(--contact-cyan);
+    outline: none;
+    box-shadow:
+        0 0 8px var(--contact-cyan-dim),
+        inset 0 0 12px rgba(0, 200, 255, 0.05);
+    transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+.contact-glass-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.contact-glass-input:focus {
+    border-color: #00e5ff;
+    box-shadow:
+        0 0 12px rgba(0, 200, 255, 0.6),
+        0 0 24px rgba(0, 200, 255, 0.2),
+        inset 0 0 12px rgba(0, 200, 255, 0.08);
+}
+
+.contact-glass-btn {
+    font-family: "PixelArt", monospace;
+    font-size: clamp(1.05rem, 3vw, 1.2rem);
+    font-weight: 700;
+    padding: 0.75rem 1.25rem;
+    color: #000;
+    background: var(--contact-cyan);
+    border: 2px solid #00e5ff;
+    cursor: pointer;
+    box-shadow:
+        0 0 12px var(--contact-cyan-dim),
+        0 0 24px rgba(0, 200, 255, 0.25);
+    text-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+    transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+}
+
+.contact-glass-btn:hover {
+    background: #00e5ff;
+    box-shadow:
+        0 0 16px rgba(0, 200, 255, 0.8),
+        0 0 32px rgba(0, 200, 255, 0.3);
+}
+
+.contact-glass-btn:active {
+    transform: scale(0.98);
+}
+
+/* Mobile: square-ish box, wider so text is readable */
+@media (max-width: 767px) {
+    .contact-glass-box {
+        width: min(88vw, 88vh);
+        max-width: min(88vw, 88vh);
+        aspect-ratio: 1;
+        max-height: min(88vh, 88vw);
+        padding: clamp(1.5rem, 5vw, 2rem);
+    }
+
+    .contact-glass-greeting {
+        font-size: clamp(1.55rem, 4vw, 2.25rem);
+    }
+
+    .contact-glass-input {
+        font-size: clamp(1rem, 3.5vw, 1.15rem);
+        padding: 0.8rem 1rem;
+    }
+
+    .contact-glass-btn {
+        font-size: clamp(1.1rem, 3.5vw, 1.25rem);
+        padding: 0.85rem 1.5rem;
+    }
+}
+
+/* Desktop: square box, 33% width */
+@media (min-width: 768px) {
+    .contact-glass-box {
+        width: min(33vw, 24rem);
+        aspect-ratio: 1;
+        max-height: min(33vw, 24rem);
+        padding: clamp(1.5rem, 2vw, 2.5rem);
+    }
+
+    .contact-glass-greeting {
+        font-size: clamp(0.9rem, 1vw, 1.05rem);
+    }
 }

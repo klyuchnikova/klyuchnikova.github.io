@@ -43,24 +43,16 @@
     <!-- Particles background (black page, particles visible on load) -->
     <div id="tsparticles" class="particles-layer" aria-hidden="true"></div>
 
-    <!-- Content above particles -->
+    <!-- Glass contact box: fixed center, mobile-fit, desktop square ~33% -->
     <main class="contacts-content">
-        <section class="cyber-contacts">
-            <div class="contact-card">
-                <h3>НЕЙРО-КОНТАКТЫ</h3>
-                <div class="contact-line">
-                    <span class="contact-icon">📡</span>
-                    <span>Telegram-бот: @NeoTokyo2089_bot</span>
-                </div>
-                <div class="contact-line">
-                    <span class="contact-icon">⌨️</span>
-                    <span>Ключ доступа: NEON-FUTURE-2089</span>
-                </div>
-                <div class="qr-code">
-                    <img src="src/images/card1.png" alt="QR-код">
-                </div>
-            </div>
-        </section>
+        <!-- Add class "cyber-glitch-2" when your single variable is set to trigger glitch (see contacts.css) -->
+        <div id="contactGlassBox" class="contact-glass-box" data-augmented-ui="tl-clip tr-clip bl-clip br-clip border">
+            <p class="contact-glass-greeting">Корпорация ОКО приветствует вас! Оставьте свои данные и мы с вами свяжемся</p>
+            <form class="contact-glass-form" action="#" method="post">
+                <input type="text" class="contact-glass-input" name="contact_data" placeholder="Ваши данные" required autocomplete="off">
+                <button type="submit" class="contact-glass-btn">Send!</button>
+            </form>
+        </div>
     </main>
 
     <!--  <script src="https://cdn.jsdelivr.net/npm/tsparticles@1.49.0/tsparticles.min.js"></script> -->
@@ -81,5 +73,11 @@
         });
     </script>
     <script src="scripts/components/mobile-menu.js"></script>
+    <script>
+        document.querySelector('.contact-glass-form')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            /* TODO: send data (e.g. fetch or form action) */
+        });
+    </script>
 </body>
 </html>
