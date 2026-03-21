@@ -68,6 +68,11 @@
 
 
 .character-detail-card {
+    /* Defaults; opening a character copies --neon-* from the clicked .card (modal_card.js) */
+    --neon-color: #00ccff;
+    --neon-color-2: #9933ff;
+    --neon-glow: rgba(0, 200, 255, 0.3);
+    --neon-glow-soft: rgba(153, 51, 255, 0.2);
     position: relative;
     background: rgba(255, 255, 255, 0.98);
     backdrop-filter: blur(12px);
@@ -134,7 +139,7 @@
 /* Header Section */
 .character-detail-header {
     grid-area: header;
-    padding: 30px 40px 20px 20px;
+    padding: 14px 40px 10px 16px;
     position: relative;
     border-bottom: 2px solid rgba(0, 0, 0, 0.1);
     background: rgba(255, 255, 255, 0.95);
@@ -164,21 +169,26 @@
     font-weight: 500;
 }
 
-/* Photo Section */
+/* Photo Section — square frame, image cover-filled, anchored top-left */
 .character-detail-photo {
     grid-area: photo;
-    padding: 30px;
+    padding: 20px 20px 10px 20px;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: flex-start;
+    justify-content: flex-start;
     background: rgba(255, 255, 255, 0.9);
+    align-self: start;
+    box-sizing: border-box;
 }
 
 .character-detail-photo img {
+    display: block;
     width: 100%;
+    max-width: min(280px, calc(100vw - 120px));
+    aspect-ratio: 1;
     height: auto;
-    max-height: 300px;
     object-fit: cover;
+    object-position: left top;
     border: 3px solid var(--neon-color, #00ccff);
     box-shadow: 
         0 0 20px var(--neon-glow, rgba(0, 200, 255, 0.3)),
@@ -189,7 +199,7 @@
 /* Content Section */
 .character-detail-content {
     grid-area: content;
-    padding: 20px 40px 40px 20px;
+    padding: 10px 40px 40px 20px;
     overflow-y: auto;
     max-height: calc(90vh - 200px);
     background: rgba(255, 255, 255, 0.95);
@@ -213,7 +223,8 @@
     font-size: 1.1rem;
     line-height: 1.6;
     color: #000 !important;
-    margin-bottom: 30px;
+    margin-top: 0;
+    margin-bottom: 24px;
     white-space: pre-line; /* Preserve line breaks in text */
     font-weight: 400;
 }
@@ -357,23 +368,26 @@
     right: 5%;
 }
 
-/* Theme Variations */
+/* Fallback neon if modal opened without prior theme copy (legacy data-role on card) */
 .character-detail-card[data-role="loyalist"] {
     --neon-color: #00ccff;
     --neon-color-2: #9933ff;
     --neon-glow: rgba(0, 200, 255, 0.3);
+    --neon-glow-soft: rgba(153, 51, 255, 0.2);
 }
 
 .character-detail-card[data-role="threat"] {
     --neon-color: #ff3366;
     --neon-color-2: #ff66cc;
     --neon-glow: rgba(255, 51, 102, 0.3);
+    --neon-glow-soft: rgba(255, 102, 204, 0.2);
 }
 
 .character-detail-card[data-role="neutral"] {
     --neon-color: #33ff66;
     --neon-color-2: #ffff33;
     --neon-glow: rgba(51, 255, 102, 0.3);
+    --neon-glow-soft: rgba(255, 255, 51, 0.2);
 }
 
 /* Responsive Design */
@@ -385,7 +399,7 @@
             "header"
             "content";
         grid-template-columns: 1fr;
-        grid-template-rows: auto auto 1fr;
+        grid-template-rows: auto auto minmax(0, 1fr);
         max-height: 95vh;
         margin: 10px;
         clip-path: polygon(
@@ -445,41 +459,55 @@
     }
 
     .character-detail-photo {
-        padding: 20px;
+        padding: 12px 20px 6px;
         background: rgba(255, 255, 255, 0.95);
+        align-self: start;
+        justify-self: start;
+        width: 100%;
+        max-width: 320px;
+        margin: 0;
     }
 
     .character-detail-photo img {
-        max-width: 200px;
+        width: 100%;
+        max-width: none;
+        aspect-ratio: 1;
         height: auto;
+        object-fit: cover;
+        object-position: left top;
         border-radius: 0 8px 0 8px;
     }
 
     .character-detail-header {
-        padding: 20px;
+        padding: 8px 20px 10px;
         background: rgba(255, 255, 255, 0.95);
         text-align: center;
     }
 
     .character-detail-name {
         font-size: 1.8rem;
+        margin-bottom: 0;
         text-shadow: 
             1px 1px 0 var(--neon-color, #00ccff),
             2px 2px 0 rgba(0, 0, 0, 0.3);
     }
 
+    /* Mobile: только имя, без подписи (character-quote) */
     .character-detail-quote {
-        font-size: 1rem;
-        text-align: center;
-        border-left: none;
-        border-bottom: 2px solid var(--neon-color, #00ccff);
-        padding-left: 0;
-        padding-bottom: 10px;
+        display: none;
+    }
+
+    /* Mobile: статы не показываем (остаются на карточке в карусели) */
+    .character-detail-stats {
+        display: none;
     }
 
     .character-detail-content {
-        padding: 20px;
-        max-height: 50vh;
+        grid-area: content;
+        padding: 10px 20px 18px;
+        overflow-y: auto;
+        min-height: 0;
+        max-height: none;
         background: rgba(255, 255, 255, 0.95);
     }
 
@@ -487,11 +515,6 @@
         font-size: 1rem;
         text-align: justify;
         color: #000;
-    }
-
-    .character-detail-stats {
-        grid-template-columns: 1fr;
-        gap: 15px;
     }
 
     .stat-item {

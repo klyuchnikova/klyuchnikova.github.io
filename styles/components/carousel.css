@@ -34,12 +34,14 @@
   z-index: 0;
 }
 
-/* Center Card (Active) */
+/* Center Card (Active) — glow follows card --neon-* (carousel_card.css) */
 .card.active {
   transform: translateX(0) scale(1);
   opacity: 1;
   z-index: 1;
-  box-shadow: 0 0 30px rgba(0, 200, 255, 0.8);
+  box-shadow:
+    0 0 28px var(--neon-glow, rgba(0, 200, 255, 0.8)),
+    0 0 48px var(--neon-glow-soft, rgba(0, 200, 255, 0.35));
 }
 
 /* Arrows */
@@ -68,13 +70,7 @@
   transform: translateY(-50%) scale(1.1);
 }
 
-.card img {
-    width: 90%;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 15px;
-}
+/* Character cards use .character-photo img (carousel_card.css); avoid .card img — it broke full-width headers */
 
 .card h3 {
     font-family: 'Orbitron', sans-serif;
@@ -183,7 +179,7 @@
 
 .stat-progress {
     height: 100%;
-    background: linear-gradient(90deg, var(--neon-color), var(--neon-dark));
+    background: linear-gradient(90deg, var(--neon-color), var(--neon-color-2, #9933ff));
     width: var(--stat-value);
     transition: width 0.5s ease-out;
 }
@@ -266,10 +262,6 @@
     box-shadow: 0 0 25px var(--neon-glow);
 }
 
-.card.active .skill-progress {
-  width: var(--skill-level);
-}
-
 /* Apply the neon color to relevant elements */
 .card[data-role] .character-name,
 .card[data-role] .skill-name,
@@ -279,5 +271,5 @@
 }
 
 .card[data-role] .skill-progress {
-  background: linear-gradient(90deg, var(--neon-color), var(--neon-dark));
+  background: linear-gradient(90deg, var(--neon-color), var(--neon-color-2, #9933ff));
 }

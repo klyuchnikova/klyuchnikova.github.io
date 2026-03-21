@@ -8,10 +8,18 @@
   left: 0;
   right: 0;
   margin: auto;
+  /* Per-character theme: set on each .card via style="--neon-color: ...; --neon-color-2: ...; --neon-glow: ..." */
+  --neon-color: #00ccff;
+  --neon-color-2: #9933ff;
+  --neon-glow: rgba(0, 200, 255, 0.5);
+  --neon-glow-soft: rgba(153, 51, 255, 0.3);
   background: rgba(10, 20, 30, 0.95);
   backdrop-filter: blur(12px);
   border-radius: 10px;
-  box-shadow: 0 0 100px rgba(0,0,0, .3);
+  box-shadow:
+    0 0 30px var(--neon-glow),
+    0 0 60px var(--neon-glow-soft),
+    0 0 100px rgba(0, 0, 0, 0.3);
   overflow: hidden;
   transform: translateX(0) scale(0.8);
   opacity: 0.4;
@@ -22,6 +30,18 @@
   transform-style: preserve-3d;
   display: flex;
   flex-direction: column;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, var(--neon-color), var(--neon-color-2));
+  border-radius: 12px;
+  z-index: -1;
 }
 
 .card.active {
@@ -35,7 +55,7 @@
   height: 220px;
   width: 100%;
   background-size: cover;
-  background-position: top;
+  background-position: left top;
   overflow: visible; /* Allow image to extend beyond header */
   padding: 0;
   margin: 0;
@@ -149,6 +169,9 @@
   z-index: 4;
   height: auto;
   padding-bottom: 10px;
+  width: 100%;
+  align-self: stretch;
+  box-sizing: border-box;
 }
 
 .skill {
@@ -181,10 +204,23 @@
 
 .skill-bar {
   height: 4px;
+  width: 100%;
+  min-height: 4px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 2px;
   overflow: hidden;
   position: relative;
+  box-sizing: border-box;
+}
+
+/* Fills when .card gets .active — keyframes run every activation (avoids “skipped” width transitions on first paint) */
+@keyframes carousel-skill-fill {
+  from {
+    width: 0%;
+  }
+  to {
+    width: var(--skill-level, 80%);
+  }
 }
 
 .skill-progress {
@@ -192,21 +228,26 @@
   top: 0;
   left: 0;
   height: 100%;
-  width: 0;
+  width: 0%;
+  max-width: 100%;
   background: linear-gradient(90deg, 
     var(--neon-color, #00ccff) 0%, 
-    var(--neon-dark, #0066ff) 50%, 
+    var(--neon-color-2, #0066ff) 50%, 
     var(--neon-color, #00ccff) 100%);
   border-radius: 2px;
-  transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* Shrink back when card loses .active */
+  transition: width 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
   box-shadow: 0 0 10px var(--neon-glow, rgba(0, 200, 255, 0.7));
   background-size: 200% 100%;
   animation: none;
 }
 
 .card.active .skill-progress {
-  width: var(--skill-level);
-  animation: gradient-shift 2s linear infinite;
+  /* Don’t fight the fill keyframes */
+  transition: none;
+  animation:
+    carousel-skill-fill 1s cubic-bezier(0.34, 1.56, 0.64, 1) both,
+    gradient-shift 2s linear infinite;
 }
 
 @keyframes gradient-shift {
@@ -214,71 +255,36 @@
   100% { background-position: -100% 0; }
 }
 
-/* Gradient Neon Borders for each theme */
-.card[data-role="loyalist"] {
-  --neon-color: #00ccff;
-  --neon-color-2: #9933ff; /* Purple for blue-purple gradient */
-  --neon-dark: #0066ff;
-  --neon-glow: rgba(0, 200, 255, 0.7);
-  box-shadow: 
-    0 0 30px rgba(0, 200, 255, 0.5),
-    0 0 60px rgba(153, 51, 255, 0.3);
+@media (prefers-reduced-motion: reduce) {
+  .skill-progress {
+    transition: none;
+  }
+  .card.active .skill-progress {
+    animation: none;
+    width: var(--skill-level, 80%);
+  }
 }
 
-.card[data-role="loyalist"]::before {
-  content: '';
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  background: linear-gradient(45deg, #00ccff, #9933ff);
-  border-radius: 12px;
-  z-index: -1;
+/* Fallback palette when a card has no inline --neon-* (legacy data-role) */
+.card[data-role="loyalist"] {
+  --neon-color: #00ccff;
+  --neon-color-2: #9933ff;
+  --neon-glow: rgba(0, 200, 255, 0.5);
+  --neon-glow-soft: rgba(153, 51, 255, 0.3);
 }
 
 .card[data-role="threat"] {
   --neon-color: #ff3366;
-  --neon-color-2: #ff66cc; /* Pink for red-pink gradient */
-  --neon-dark: #a8003c;
-  --neon-glow: rgba(255, 51, 102, 0.7);
-  box-shadow: 
-    0 0 30px rgba(255, 51, 102, 0.5),
-    0 0 60px rgba(255, 102, 204, 0.3);
-}
-
-.card[data-role="threat"]::before {
-  content: '';
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  background: linear-gradient(45deg, #ff3366, #ff66cc);
-  border-radius: 12px;
-  z-index: -1;
+  --neon-color-2: #ff66cc;
+  --neon-glow: rgba(255, 51, 102, 0.5);
+  --neon-glow-soft: rgba(255, 102, 204, 0.3);
 }
 
 .card[data-role="neutral"] {
   --neon-color: #33ff66;
-  --neon-color-2: #ffff33; /* Yellow for green-yellow gradient */
-  --neon-dark: #0fa34a;
-  --neon-glow: rgba(51, 255, 102, 0.7);
-  box-shadow: 
-    0 0 30px rgba(51, 255, 102, 0.5),
-    0 0 60px rgba(255, 255, 51, 0.3);
-}
-
-.card[data-role="neutral"]::before {
-  content: '';
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  background: linear-gradient(45deg, #33ff66, #ffff33);
-  border-radius: 12px;
-  z-index: -1;
+  --neon-color-2: #ffff33;
+  --neon-glow: rgba(51, 255, 102, 0.5);
+  --neon-glow-soft: rgba(255, 255, 51, 0.3);
 }
 
 .text-container {
@@ -296,81 +302,40 @@
   height: 150px;
   border-radius: 50%;
   border: 3px solid var(--neon-color, #00ccff);
-  box-shadow: 
+  box-shadow:
     0 0 20px var(--neon-glow, rgba(0, 200, 255, 0.7)),
+    0 0 40px var(--neon-glow-soft, rgba(0, 150, 255, 0.35)),
     inset 0 0 10px rgba(0, 0, 0, 0.3);
   overflow: hidden;
-  z-index: 10; /* Ensure it's above everything */
+  z-index: 10;
   background: rgba(10, 20, 30, 0.9);
+  pointer-events: none;
+}
+
+.character-icon::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  background: linear-gradient(
+    45deg,
+    var(--neon-color, #00ccff),
+    var(--neon-color-2, #9933ff)
+  );
+  border-radius: 50%;
+  z-index: -1;
 }
 
 .character-icon img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: top center;
+  object-position: left top;
   display: block;
-}
-
-/* Ensure the icon has the same neon color as the card theme */
-.card[data-role="loyalist"] .character-icon {
-  border-color: #00ccff;
-  box-shadow: 
-    0 0 20px rgba(0, 200, 255, 0.7),
-    0 0 40px rgba(153, 51, 255, 0.5),
-    inset 0 0 10px rgba(0, 0, 0, 0.3);
-}
-
-.card[data-role="loyalist"] .character-icon::before {
-  content: '';
-  position: absolute;
-  top: -3px;
-  left: -3px;
-  right: -3px;
-  bottom: -3px;
-  background: linear-gradient(45deg, #00ccff, #9933ff);
-  border-radius: 50%;
-  z-index: -1;
-}
-
-.card[data-role="threat"] .character-icon {
-  border-color: #ff3366;
-  box-shadow: 
-    0 0 20px rgba(255, 51, 102, 0.7),
-    0 0 40px rgba(255, 102, 204, 0.5),
-    inset 0 0 10px rgba(0, 0, 0, 0.3);
-}
-
-.card[data-role="threat"] .character-icon::before {
-  content: '';
-  position: absolute;
-  top: -3px;
-  left: -3px;
-  right: -3px;
-  bottom: -3px;
-  background: linear-gradient(45deg, #ff3366, #ff66cc);
-  border-radius: 50%;
-  z-index: -1;
-}
-
-.card[data-role="neutral"] .character-icon {
-  border-color: #33ff66;
-  box-shadow: 
-    0 0 20px rgba(51, 255, 102, 0.7),
-    0 0 40px rgba(255, 255, 51, 0.5),
-    inset 0 0 10px rgba(0, 0, 0, 0.3);
-}
-
-.card[data-role="neutral"] .character-icon::before {
-  content: '';
-  position: absolute;
-  top: -3px;
-  left: -3px;
-  right: -3px;
-  bottom: -3px;
-  background: linear-gradient(45deg, #33ff66, #ffff33);
-  border-radius: 50%;
-  z-index: -1;
+  border-radius: 0;
+  margin: 0;
 }
 
 .styleme {

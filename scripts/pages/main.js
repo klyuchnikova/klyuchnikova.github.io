@@ -75,53 +75,53 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 document.addEventListener('DOMContentLoaded', function() {
-  const cards = document.querySelectorAll('.card');
-  const leftBtn = document.querySelector('.carousel-arrow.left');
-  const rightBtn = document.querySelector('.carousel-arrow.right');
-  let currentIndex = 1; // Start with middle card active
-  let isTransitioning = false;
+  /* One carousel state per .carousel-container (multiple factions on index) */
+  document.querySelectorAll('.carousel-container').forEach(function(container) {
+    const cards = container.querySelectorAll('.cards .card');
+    const leftBtn = container.querySelector('.carousel-arrow.left');
+    const rightBtn = container.querySelector('.carousel-arrow.right');
+    if (!cards.length || !leftBtn || !rightBtn) return;
 
-  // Initialize carousel
-  function updateCarousel(direction = null) {
-    if (isTransitioning) return;
-    isTransitioning = true;
+    let currentIndex = Math.min(1, cards.length - 1);
+    let isTransitioning = false;
 
-    cards.forEach((card, index) => {
-      card.classList.remove('active', 'prev', 'next');
-      
-      if (index === currentIndex) {
-        card.classList.add('active');
-      } else if (index === (currentIndex - 1 + cards.length) % cards.length) {
-        card.classList.add('prev');
-      } else if (index === (currentIndex + 1) % cards.length) {
-        card.classList.add('next');
-      }
+    function updateCarousel() {
+      if (isTransitioning) return;
+      isTransitioning = true;
+
+      cards.forEach((card, index) => {
+        card.classList.remove('active', 'prev', 'next');
+        if (index === currentIndex) {
+          card.classList.add('active');
+        } else if (index === (currentIndex - 1 + cards.length) % cards.length) {
+          card.classList.add('prev');
+        } else if (index === (currentIndex + 1) % cards.length) {
+          card.classList.add('next');
+        }
+      });
+
+      const activeCard = cards[currentIndex];
+      const transitionEndHandler = function() {
+        isTransitioning = false;
+        activeCard.removeEventListener('transitionend', transitionEndHandler);
+      };
+      activeCard.addEventListener('transitionend', transitionEndHandler);
+    }
+
+    leftBtn.addEventListener('click', function() {
+      if (isTransitioning) return;
+      currentIndex = (currentIndex - 1 + cards.length) % cards.length;
+      updateCarousel();
     });
 
-    const activeCard = cards[currentIndex];
-    const transitionEndHandler = () => {
-      isTransitioning = false;
-      activeCard.removeEventListener('transitionend', transitionEndHandler);
-    };
-    activeCard.addEventListener('transitionend', transitionEndHandler);
-  }
+    rightBtn.addEventListener('click', function() {
+      if (isTransitioning) return;
+      currentIndex = (currentIndex + 1 + cards.length) % cards.length;
+      updateCarousel();
+    });
 
-  // Left arrow: Move to previous card
-  leftBtn.addEventListener('click', () => {
-    if (isTransitioning) return;
-    currentIndex = (currentIndex - 1 + cards.length) % cards.length;
-    updateCarousel('left');
+    updateCarousel();
   });
-
-  // Right arrow: Move to next card
-  rightBtn.addEventListener('click', () => {
-    if (isTransitioning) return;
-    currentIndex = (currentIndex + 1) % cards.length;
-    updateCarousel('right');
-  });
-
-  // Initialize
-  updateCarousel();
 });
 
 document.addEventListener('DOMContentLoaded', function() {

@@ -9,6 +9,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalStats = modal.querySelector('.character-detail-stats');
     const closeButton = modal.querySelector('.close-modal');
 
+    const NEON_VARS = ['--neon-color', '--neon-color-2', '--neon-glow', '--neon-glow-soft'];
+
+    function applyNeonThemeFromCard(card) {
+        const cs = getComputedStyle(card);
+        NEON_VARS.forEach(function(key) {
+            const v = cs.getPropertyValue(key).trim();
+            if (v) {
+                modalCard.style.setProperty(key, v);
+            }
+        });
+    }
+
     // Add click event to all cards
     document.querySelectorAll('.card').forEach(card => {
         card.addEventListener('click', function() {
@@ -28,7 +40,8 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             // Populate modal
-            modalCard.setAttribute('data-role', role);
+            modalCard.setAttribute('data-role', role || 'neutral');
+            applyNeonThemeFromCard(card);
             modalPhoto.src = photo;
             modalPhoto.alt = name;
             modalName.textContent = name;
